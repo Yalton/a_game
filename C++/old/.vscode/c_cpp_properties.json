@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "WSL",
+            "intelliSenseMode": "linux-clang-x64",
+            "includePath": [
+                "${workspaceRoot}",
+                "U:/local/include",
+                "U:/include/x86_64-linux-gnu",
+                "U:/include"
+            ],
+            "defines": [
+                "__linux__",
+                "__x86_64__"
+            ],
+            "browse": {
+                "path": [
+                    "U:/local/include",
+                    "U:/include/x86_64-linux-gnu",
+                    "U:/include/*"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "cStandard": "c11"
+        }
+    ],
+    "version": 4
+}

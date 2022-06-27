@@ -59,7 +59,7 @@ void INThandler(int sig)
 		return;
 	}
 }
-//Function to print island asci art, and text that starts the game.
+// Function to print island asci art, and text that starts the game.
 void ascisland(Player *obj)
 {
 	ifstream island("ASCI/island.txt");
@@ -105,38 +105,38 @@ void victory(Player *obj)
 
 int main()
 {
-	//Signal Handlers
+	// Signal Handlers
 	signal(SIGSEGV, segvhandler);
 	signal(SIGABRT, abrthandler);
 	signal(SIGINT, INThandler);
-	//Create two pointers to custom objects.
+	// Create two pointers to custom objects.
 	Player *you = new Player();
 	vector<Event *> evn;
-	//Populate a vector with three new Events
+	// Populate a vector with three new Events
 	for (int i = 0; i < 3; i++)
 		evn.push_back(new Event());
 
-	int numpath,loops,updater = 0;
+	int numpath, loops, updater = 0;
 	int unpath[2] = {0};
 	srand(time(0));
 	you->setdist(randnum(20, 32));
-	//Print island for player
+	// Print island for player
 	ascisland(you);
-	//Gets path choice from player
+	// Gets path choice from player
 	std ::cout << "Path 1,2,or 3?:";
 	do
 	{
 		std ::cin >> numpath;
-		std ::cin.clear(); //Clear possible error value of cin
+		std ::cin.clear(); // Clear possible error value of cin
 		std ::cin.ignore(100, '\n');
 	} while (numpath != 1 && numpath != 2 && numpath != 3);
 	std ::cout << '\n';
-	//Sets the players path variable to be whatever they chose
+	// Sets the players path variable to be whatever they chose
 	you->setpath(numpath);
-	//Builds all three paths
+	// Builds all three paths
 	for (int i = 0; i < 3; i++)
 		evn[i]->buildpath(you);
-	//Prints path for choice
+	// Prints path for choice
 	if (DEBUG)
 	{
 		std ::cout << "[Main]DEBUG:Calling print for Path # " << you->getpath() << "." << '\n';
@@ -145,7 +145,7 @@ int main()
 	/*Main loop of game, reroutes to all extranous functions from here, and all functions return to this loop*/
 	do
 	{
-		//Assign unused paths to unpath
+		// Assign unused paths to unpath
 		switch (you->getpath())
 		{
 		case 1:
@@ -161,31 +161,31 @@ int main()
 			unpath[1] = 1;
 			break;
 		}
-		//Debug statement to update
+		// Debug statement to update
 		if (DEBUG)
 		{
 			std ::cout << "\n[Main]DEBUG: In main loop of game. Distance traveled is " << you->getdelta() << " Path is #" << you->getpath() << " Unused path 1 is # " << unpath[0] << " Unused path 2 is # " << unpath[1] << " Event ID is " << evn[you->getpath() - 1]->getevt() << " Distance value is " << evn[you->getpath() - 1]->getdist() << '\n';
 		}
 
-		//If player is still alive (and has not gained the opportunity to switch paths) this block will run
+		// If player is still alive (and has not gained the opportunity to switch paths) this block will run
 		if (updater == 0)
 		{
-			//Stores the return value of eventable in updater, updater will tell main if there have been in changes in event.cpp
+			// Stores the return value of eventable in updater, updater will tell main if there have been in changes in event.cpp
 			if (DEBUG)
 				std ::cout << "[Main]DEBUG:In main, Entering eventable for path # " << you->getpath() << "." << '\n';
 			updater = evn[you->getpath() - 1]->eventable(evn[you->getpath() - 1]->getevt(), you);
 			you->setdelta(you->getdelta() + 1);
-			//you->setdist(evn[numpath - 1]->getdist());
+			// you->setdist(evn[numpath - 1]->getdist());
 		}
-		//If the player has been detected as "dead" then this block will run
+		// If the player has been detected as "dead" then this block will run
 		else if (updater == -1)
 		{
-			//Calls death function, which subsequently ends the game
+			// Calls death function, which subsequently ends the game
 			if (you->gethp() <= 0)
 			{
 				death(you);
 			}
-			//Error handling if there are any discrepencies between what main sees and what everything else sees
+			// Error handling if there are any discrepencies between what main sees and what everything else sees
 			else
 			{
 				std ::cerr << "[Main]ERROR: Event reported player as dead, main reported as alive. Cannot compute value in superposition. Aborting program" << '\n';
@@ -202,7 +202,7 @@ int main()
 			exit(1);
 		}
 
-		//Brings the unused paths up to the current distance value.
+		// Brings the unused paths up to the current distance value.
 		if ((evn[unpath[0] - 1]->getdist()) > (evn[you->getpath() - 1]->getdist()))
 		{
 			evn[unpath[0] - 1]->ghostnext(you, (evn[you->getpath() - 1])->getdist());
@@ -213,14 +213,14 @@ int main()
 			evn[unpath[1] - 1]->ghostnext(you, (evn[you->getpath() - 1])->getdist());
 		}
 		loops++;
-//Loop that keeps play in game while the list is not empty
+		// Loop that keeps play in game while the list is not empty
 	} while (evn[you->getpath() - 1]->empty() != 1 && loops < MAX_LOOP);
-	if(loops == MAX_LOOP)
+	if (loops == MAX_LOOP)
 	{
-		cerr <<"ERROR:Loop in main exceeded MAX_LOOP, killing program." << '\n'; 
-		exit(1); 
+		cerr << "ERROR:Loop in main exceeded MAX_LOOP, killing program." << '\n';
+		exit(1);
 	}
-	
+
 	std ::cerr << "[Main]ERROR: Pointer made it to the end of main" << '\n';
 	return 0;
 }
