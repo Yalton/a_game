@@ -8,9 +8,7 @@ class Event
 private:
 	typedef struct monster
 	{
-		string name;
-		int hp = 0;
-		int dmg = 0;
+
 	};
 	class Path
 	{
