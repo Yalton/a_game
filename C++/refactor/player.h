@@ -1,5 +1,7 @@
 #ifndef PLAYER
 #define PLAYER
+#include <iostream>
+#include <vector>
 #include "item.h"
 #include "header.h"
 using namespace std;

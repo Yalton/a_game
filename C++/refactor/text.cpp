@@ -1,3 +1,7 @@
+#include<iostream>
+#include<fstream>
+#include"text.h"
+
 
 /* ASCI Art Functions uses input files to print ASCI art to the screen */
 void asciwin()

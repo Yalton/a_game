@@ -1,7 +1,8 @@
 #ifndef EVENT_H
 #define EVENT_H
-#include "player.h"
 #include "enemy.h"
+#include "player.h"
+#include "text.h"
 #include "header.h"
 using namespace std;
 class Event

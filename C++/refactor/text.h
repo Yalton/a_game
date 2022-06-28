@@ -1,5 +1,6 @@
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef TEXT_H
+#define TEXT_H
+using namespace std;
 
 class Text
 {
