@@ -1,5 +1,6 @@
 #ifndef TEXT_H
 #define TEXT_H
+#include "player.h"
 using namespace std;
 
 class Text
@@ -9,6 +10,12 @@ private:
     string data;
 
 public:
+    /*General Printing Functions, used to deliver information to the player */
+    void ascisland(Player *obj);
+    void score(Player *obj);
+    void death(Player *obj);
+    void victory(Player *obj);
+
     /* ASCI Art Functions uses input files to print ASCI art to the screen */
     void asciwin();
     void asciguardian();

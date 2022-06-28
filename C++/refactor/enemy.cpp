@@ -78,8 +78,8 @@ Enemy::Enemy(int id)
         dmg = 3;
         break;
     case 20:
-        hp = randn(16, 22);
-        dmg = randn(4, 6);
+        hp = Utilities::randn(16, 22);
+        dmg = Utilities::randn(4, 6);
         name = "Endellos, Guardian of the ship";
         break;
     case 999:

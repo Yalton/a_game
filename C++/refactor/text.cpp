@@ -2,6 +2,52 @@
 #include<fstream>
 #include"text.h"
 
+// Function to print island asci art, and text that starts the game.
+void ascisland(Player *obj)
+{
+	ifstream island("ASCI/island.txt");
+	std ::cout << island.rdbuf();
+	std ::cout << '\n';
+	std ::cout << '\n';
+	std ::cout << '\n';
+	std ::cout << "You wake up to find youself alone on an island in the middle of the ocean.You can see a cruise ship on the horizon. " << '\n';
+	std ::cout << '\n';
+	std ::cout << "Attached the the island are three paths all going in the direction on the ship. No one path seems better than any other, which path will you choose?" << '\n';
+}
+
+/*Score function, Runs whenever the player dies/wins, IE when the game exits normally. */
+void score(Player *obj)
+{
+	std ::cout << "\n         ||Score||         " << '\n';
+	std ::cout << "===========================" << '\n';
+	std ::cout << "# of Items: " << obj->size() << '\n';
+	std ::cout << "# of Batteries: " << obj->getbatt() << '\n';
+	std ::cout << "Distance Traveled: " << obj->getdelta() << '\n';
+	if (obj->getsecr() != 1)
+		std ::cout << "*Found a Secret*" << '\n';
+	std ::cout << "===========================" << '\n';
+	exit(1);
+}
+
+/* Death Fumction, runs when player hp has fallen to or below 0 */
+void death(Player *obj)
+{
+	ifstream death("ASCI/death.txt");
+	std ::cout << death.rdbuf();
+	std ::cout << "\nYou crawl across the sand,no longer able to go on,your hands and feet bloodied from your journey; you feel the life slowly drain from your body as the sun beats down on you and the waves lap at the shore." << '\n';
+	score(obj);
+}
+
+/* Victory function, runs when they player wins*/
+void victory(Player *obj)
+{
+	ifstream victory("ASCI/victory.txt");
+	std ::cout << victory.rdbuf();
+	score(obj);
+}
+
+
+
 
 /* ASCI Art Functions uses input files to print ASCI art to the screen */
 void asciwin()
