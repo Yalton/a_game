@@ -16,20 +16,23 @@ private:
     int path;
     int secr;
     float dfc;
-    vector<Item> items;
-    
+
 public:
+    vector<Item *> items;
     // List functions
     Player();
     ~Player();
-    bool empty();
-    bool remove(char c, int value);
-    int size();
-    string itemname(char c, int val);
-    int typepresent(char c);
-    int givenum(char c, int x);
-    bool doeshave(char c, int val);
-    void insert(char type, int val);
+    // bool empty();
+    // bool remove(char c, int value);
+    // int size();
+    // string itemname(char c, int val);
+    // int typepresent(char c);
+    // int givenum(char c, int x);
+    // bool doeshave(char c, int val);
+    // void insert(char type, int val);
+
+    void useItem(int id);
+    void addItem(int id);
 
     // Setters and Getters
     void damage(int x);

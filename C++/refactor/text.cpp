@@ -1,6 +1,6 @@
-#include<iostream>
-#include<fstream>
-#include"text.h"
+#include <iostream>
+#include <fstream>
+#include "text.h"
 
 // Function to print island asci art, and text that starts the game.
 void ascisland(Player *obj)
@@ -20,7 +20,7 @@ void score(Player *obj)
 {
 	std ::cout << "\n         ||Score||         " << '\n';
 	std ::cout << "===========================" << '\n';
-	std ::cout << "# of Items: " << obj->size() << '\n';
+	std ::cout << "# of Items: " << obj->items.size() << '\n';
 	std ::cout << "# of Batteries: " << obj->getbatt() << '\n';
 	std ::cout << "Distance Traveled: " << obj->getdelta() << '\n';
 	if (obj->getsecr() != 1)
@@ -45,9 +45,6 @@ void victory(Player *obj)
 	std ::cout << victory.rdbuf();
 	score(obj);
 }
-
-
-
 
 /* ASCI Art Functions uses input files to print ASCI art to the screen */
 void asciwin()

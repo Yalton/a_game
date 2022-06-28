@@ -9,6 +9,7 @@
 #include "item.h"
 #include "player.h"
 #include "event.h"
+#include "header.h"
 using namespace std;
 
 /* Handles abort signals */
@@ -46,16 +47,13 @@ void INThandler(int sig)
 	}
 }
 
-
-
 int main()
 {
 	signal(SIGSEGV, segvhandler);
 	signal(SIGABRT, abrthandler);
 	signal(SIGINT, INThandler);
 
-
-    Player *you = new Player();
-    GameMap *curentMap = new GameMap();
-    return 0;
+	Player *you = new Player();
+	GameMap *curentMap = new GameMap();
+	return 0;
 }

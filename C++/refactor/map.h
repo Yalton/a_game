@@ -12,6 +12,7 @@ class GameMap
 private:
     vector<vector<Event>> paths;
     Player player;
+    Text outputText;
 
 public:
 public:
