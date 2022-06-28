@@ -11,6 +11,7 @@ private:
     int id = 0;
 
 public:
+    Item();
     Item(int id);
     ~Item();
     // bool empty();

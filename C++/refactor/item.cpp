@@ -3,6 +3,10 @@
 #include "item.h"
 using namespace std;
 
+Item::Item()
+{
+}
+
 Item::Item(int id)
 {
     switch (id)
@@ -83,4 +87,8 @@ Item::Item(int id)
         cerr << "[Player]ERROR: Attempting to add an item which does not exist. Id: " << id << "." << '\n';
         exit(1);
     }
+}
+
+Item::~Item()
+{
 }

@@ -1,7 +1,7 @@
 game: player.o event.o main.o map.o item.o enemy.o text.o
-	g++ -Wall -pedantic -g -o game player.o event.o main.o 
+	g++ -Wall -pedantic -g -std=c++17 -o game player.o event.o main.o map.o item.o enemy.o text.o
 
-main.o: player.h event.h map.h main.cpp enemy.h header.h
+main.o: player.h item.h event.h map.h main.cpp enemy.h header.h
 	g++ -Wall -pedantic -g -std=c++17 -c main.cpp
 
 map.o: map.h map.cpp map.h enemy.h event.h header.h
@@ -23,4 +23,4 @@ text.h: text.o text.cpp text.h header.h
 	g++ -Wall -pedantic -g -std=c++17 -c text.cpp
 
 clean: 
-	rm -f game game.exe main.o player.o  a.out event.o
+	rm -f game player.o event.o main.o map.o item.o enemy.o text.o

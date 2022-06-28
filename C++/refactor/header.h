@@ -7,7 +7,7 @@ inline int MAX_LOOP = 1000000;
 namespace Utilities
 {
     /*Creates a random number between a, and b */
-    int randn(int a, int b)
+    inline int randn(int a, int b)
     {
         int x = 0;
         for (int i = 0; i < 100500; i++)
