@@ -7,7 +7,7 @@ main.o: player.h item.h event.h map.h main.cpp enemy.h header.h
 map.o: map.h map.cpp map.h enemy.h event.h header.h
 	g++ -Wall -pedantic -g -std=c++17 -c map.cpp
 
-event.h: event.o event.cpp player.h enemy.h text.h header.h 
+event.o: event.cpp event.h player.h enemy.h text.h header.h 
 	g++ -Wall -pedantic -g -std=c++17 -c event.cpp
 
 player.o: player.h player.cpp item.h header.h
