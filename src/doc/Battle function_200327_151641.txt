@@ -1,0 +1,21 @@
+Battle function 
+
+Move Ids
+
+Attack: 1 
+Block: 2 
+Dodge: 3 
+Grab: 4 
+
+Enemy “AI”
+
+No advantage 
+25% any move 
+
+You have advantage 
+35% chance block & dodge 
+15% chance attack or grab 
+
+They have advantage 
+35% chance attack or grab 
+15% chance block or dodge
