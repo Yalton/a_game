@@ -1,0 +1,38 @@
+Mansion search Id’s
+
+Kitchen
+Fridge: 0
+Pantry: 1
+Oven: 2
+Dishwasher: 3 
+
+Dining room
+Battle chance: 4 
+
+Guest bedroom 
+
+Nightstand: 5 
+Closet: 6 
+Dresser: 7 
+
+Living room 
+Room id: 8 
+
+Study
+Desk: 9 
+Bookshelf: 10 
+Cabinet: 11 
+
+Bedroom 
+Room: 12 
+
+Bathroom 
+
+Room : 13 
+
+Master bedroom 
+Bed: 14 
+Closet: 15 
+Dresser: 16 
+Wardrobe: 17 
+Desk: 18
