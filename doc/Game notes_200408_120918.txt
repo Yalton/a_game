@@ -1,0 +1,18 @@
+Game notes 
+Victory asci after battles
+
+Status effect feature 
+
+High score system 
+
+Save game feature 
+
+Add more items 
+
+Reward at the top of the lighthouse 
+
+Reduce the text 
+
+Add more indicators 
+
+Score bug

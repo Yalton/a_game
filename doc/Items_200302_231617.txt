@@ -1,0 +1,22 @@
+Items 
+O Items 
+1 Crowbar (+1 dmg)
+2 Sword  (+2 dmg)
+3 Gun  (+4 dmg)
+
+D items 
+1 Leather shirt ( .9 mult)
+2 Chainmail (.6 Mult)
+3 Knight Armor (.2 Mult)
+
+H Items
+1 bandage (+2 hp)
+2 Medkit (+5 hp)
+3 Stem Cells (hpx2)
+
+S items 
+1 Battery Box (+[1,3] batts)
+2 Mystery Box (Random Item)
+3 Wormhole Box (- [1,5] dist) 
+4 Battle Box (Battle a random enemy)
+5 Pandora’s Box (???)

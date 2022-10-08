@@ -1,0 +1,6 @@
+Item types 
+N:null 
+O:Offense 
+D:Defense 
+H: Health 
+S:Special
