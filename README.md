@@ -1,7 +1,7 @@
 # A_game
 ----
 
-![island](island.png)
+![island](island.png=100x20)
 
 Text based adventure game coded in C++
 
