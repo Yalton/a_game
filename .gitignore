@@ -1,6 +1,8 @@
 #Ignore temp files
 $*
 
+.vscode
+
 #Ignore object files
 *.[o]
 

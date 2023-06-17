@@ -96,7 +96,7 @@ class Event {
     //ITEM HELPER FUNCTIONS
     //######################
 
-    async randitem() {
+    asyncobj.randitem() {
         let luck = constants.randomNumber(1, 100);
         if (luck > 75) {
             return 'H';
@@ -186,7 +186,7 @@ class Event {
                     case 1:
                         asciiArt.ascibatterybox();
                         obj.batt = (obj.batt + batt);
-                        constants.output(`You open up the Battery Box, and see it contains ${batt} batteries! Your total number of batteries is now ${obj.getBatt()}.`);
+                        constants.output(`You open up the Battery Box, and see it contains ${batt} batteries! Your total number of batteries is now ${obj.batt}.`);
                         obj.remove('S', 1);
                         break;
 
@@ -1231,7 +1231,7 @@ class Event {
             let choice;
             for (let i = 0; i < length; i++) {
 
-                constants.output("You enter room # " << i + 1 << " of the cave.")
+                constants.output("You enter room # " + i + 1 + " of the cave.")
                 if (roomluck[i] == 0) {
                     if (constants.DEBUG)
                         constants.output("[Event]DEBUG:Cave event knows player is in first room, setting luck value to 100")
@@ -1239,7 +1239,7 @@ class Event {
                 }
                 else {
                     if (constants.DEBUG)
-                        constants.output("[Event]DEBUG:In room #" << i + 1 << " luck value is: " << roomluck[i])
+                        constants.output("[Event]DEBUG:In room #" + i + 1 + " luck value is: " + roomluck[i])
                     //BLocks that run to determine events in each room, dependent on luck value.
                     if (roomluck[i] < 20) {
                         constants.output("This room is empty, there is nothing but cold stone here.")
@@ -1314,7 +1314,7 @@ class Event {
 
             let choice;
             for (let i = 0; i < length; i++) {
-                constants.output("\nYou enter room # " << i + 1 << " of the cave.")
+                constants.output("\nYou enter room # " + i + 1 + " of the cave.")
                 //If player is in the first toom, set their luck to 100
                 if (roomluck[i] == 0) {
                     if (constants.DEBUG)
@@ -1323,7 +1323,7 @@ class Event {
                 }
                 else {
                     if (constants.DEBUG)
-                        constants.output("[Event]DEBUG:In room #" << i + 1 << " luck value is: " << roomluck[i])
+                        constants.output("[Event]DEBUG:In room #" + i + 1 + " luck value is: " + roomluck[i])
                     //Blocks that determine what happens in each of the rooms, based on luck value.
                     if (roomluck[i] < 25) {
                         constants.output("This room feels emptier than the others, you can hear your every footstep echoing against the cave walls.")
@@ -1339,7 +1339,7 @@ class Event {
                     }
                     else {
                         let dmg = constants.randomNumber(1, 5);
-                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" << dmg << " Hp)")
+                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" + dmg + " Hp)")
                         player.hp = (player.hp - dmg);
                         await this.buffer('.');
                         buf = await constants.input("Enter your choice: ");
@@ -1891,129 +1891,405 @@ class Event {
         await this.next(obj);
     }
 
+    async lighthouse(player) {
+        let abom = false;
+        let done = false;
+        let floors = constants.randomNumber(4, 8);
+        let c = 'm';
+        let choice = 'm';
+        let luck = 0;
+        asciiArt.ascilighthouse();
+        constants.output("\nYou approach what seems to be an abandoned lighthouse. It is at least " + floors + " floors and  " + floors * 10 + " meters tall, and it appears to be in a horrid state of disrepair. Despite all of this, you get the sense that you could find something very useful inside.");
+        constants.output("Would you like to enter the lighthouse? (y:yes || n:no)");
+
+        do {
+            c = await constants.input("");
+        } while (c != 'y' && c != 'n');
+
+        if (c == 'y') {
+            let i = 0;
+
+            do {
+                if (i == 0) {
+                    constants.output("You decide to enter the lighthouse; the bottom floor of the lighthouse seemed to infer the whole thing may be dillapidated, and permeated with an overwhelming scent of rot");
+                } else if (i == floors) {
+                    let buf = ' ';
+                    let type;
+                    let id = 0;
+
+                    let item = genranditem(type, id);
+                    constants.output("\nYou made it to the top of the lighthouse, the view from up here is astounding!");
+                    constants.output("You stare at the ocean around you, so entranced you don't even notice the " + player.itemname(type, id) + " on the ground right next to you!");
+                    await this.buffer('.');
+                    buf = await constants.input("");
+                    player.insert(item.type, item.id);
+                    done = true;
+                } else {
+                    constants.output("You ascend to floor #" + i + "...");
+                    //The 5 options for what could happen on any given floor.
+                    if (luck < 20) {
+                        constants.output("This room is empty, long since abandoned by any living soul. Cockroaches scurry at your feet as you walk through the room, and you know there cant possibly be anything of value to you here.");
+                        luck = constants.randomNumber(1, 100);
+                    } else if (luck > 20 && luck < 40) {
+                        luck = constants.randomNumber(1, 100);
+                        let chance = constants.randomNumber(1, 99);
+                        let book = 0;
+                        constants.output("This room is almost empty, with the exception of an oddly pristine bookcase laid up against one of the walls of the room.")
+                        constants.output("Every other surface in the room is filthy and rotten, but the bookcase looks almost untouched, freshly cleaned even.")
+                        constants.output("Three books are ajar from the other, and something tells you you need to pull out one of those books, but you are not sure which.")
+                        constants.output("Which book do you take? (1: Book #1 || 2:Book #2 || 3:Book #3)")
+                        do {
+                            cin >> book;
+                        } while (book != 1 && book != 2 && book != 3);
+                        //Book chances
+                        switch (book) {
+                            case 1:
+                                if (chance < 33) {
+                                    let bat = constants.randomNumber(1, 3);
+                                    obj.batt = (obj.batt + bat);
+                                    constants.output("You pull the book from the shelf, and open it up. Inside you find that the pages have been carved out and someone has stashed " + bat + " batteries) inside!")
+                                    constants.output("You now have " + obj.batt + bat + "batteries.")
+                                    constants.output("You attempt to place the book back in the bookshelf, and to your suprise you notice the entire thing has vanished.")
+                                }
+                                else if (chance > 33 && chance < 66) {
+                                    constants.output("You pull the book from the shelf, and open it up. It's an old horror novel, something about strange colors in a well and infected agriculture. You feel a sense of dread wash over you, something horrible is waiting for you here.")
+                                    abom = 1;
+                                }
+                                else {
+                                    constants.output("You pull the book from the shelf, and open it to find all the pages in the book empty, but at the very end of the book someone left a bandage. Only slightly used, so you decide to patch yourself up.(Hp +1)")
+                                    obj.hp = (obj.hp + 1);
+                                }
+                                break;
+                            case 2:
+                                if (chance < 33) {
+                                    let type = obj.randitem();
+                                    let id = constants.randomNumber(1, 3);
+                                    constants.output("You pull the book from it's shelf, and behind it you find a/an " + obj.itemname(type, id) + "!")
+                                    obj.insert(type, id);
+                                }
+                                else if (chance > 33 && chance < 66) {
+                                    constants.output("You pull the book from the shelf, and open it to find all the pages in the book empty, but at the very end of the book someone left a bandage. Only slightly used, so you decide to patch yourself up.(Hp +1)")
+                                    obj.hp = (obj.hp + 1);
+                                }
+                                else {
+                                    let dmg = constants.randomNumber(3, 5);
+                                    constants.output("You pull the book from the shelf, but upon doing so the entire shelf collapses on top of you,and you fall unconcious. When you come to the bookshelf is no where to be found, but your body aches and you struggle to get up. (Hp -" + dmg + ")")
+                                    obj.hp = (obj.hp - dmg);
+                                }
+                                break;
+                            case 3:
+                                if (chance < 33) {
+                                    constants.output("You pull the book from the shelf, and open it up. It's an old horror novel, something about strange colors in a well and infected agriculture. You feel a sense of dread wash over you, something horrible is waiting for you here.")
+                                    abom = 1;
+                                }
+                                else if (chance > 33 && chance < 66) {
+                                    constants.output("You pull the book from the shelf, and open it up. The book appears the be a cooking book of some kind, but none of the recipies make any sense. Calling for things like, Pride in one self, and Zest for Life.")
+                                }
+                                else {
+                                    let bat = constants.randomNumber(1, 3);
+                                    obj.batt = (obj.batt + bat);
+                                    constants.output("You pull the book from the shelf, and open it up. Inside you find that the pages have been carved out and someone has stashed " + bat + " batteries) inside!")
+                                    constants.output("You now have " + obj.batt + bat + "batteries.")
+                                    constants.output("You attempt to place the book back in the bookshelf, and to your suprise you notice the entire thing has vanished.")
+                                }
+                                break;
+                            default:
+                                console.error("ERROR: Book # non-existant, ending game!")
+                                exit(1);
+                                break;
+                        };
+                    }
+                    else if (luck > 40 && luck < 60) {
+                        luck = constants.randomNumber(1, 100);
+                        if (abom) {
+                            constants.output("An unearthly chill comes over you, unlike anything you have ever felt before. You feel eyes on you, but these eyes see more than any other, you know you have walked into your doom.")
+                            obj.setsecr(obj.getsecr() * -1);
+                            await this.battle(obj, 999);
+                        }
+                        else {
+                            constants.output("You cannot be sure what, but something is in this room, and its coming right at you!")
+                            await this.battle(obj, 0);
+                        }
+                    }
+                    else if (luck > 60 && luck < 80) {
+                        luck = constants.randomNumber(1, 100);
+                        let type = obj.randitem();
+                        let id = 0;
+                        if (type == 'S') {
+                            id = constants.randomNumber(1, 5);
+                        }
+                        else {
+                            id = constants.randomNumber(1, 3);
+                        }
+                        constants.output("You enter the room, and it is largely in disrepair much like all the others. In the center of the room however there is a " + obj.itemname(type, id) + " sitting on a nearly collapsed table.")
+                        obj.insert(type, id);
+                    }
+                    else {
+                        luck = constants.randomNumber(1, 100);
+                        let chance = constants.randomNumber(1, 100);
+                        let d = 'm';
+                        constants.output("You enter the room, and the first thing you notice is the smell. The entire lighthouse has a foul odor, but in this room its was inescapable. The stench was so overpowering you almost failed to notice a chest in the center of the room. There is something ominous about this chest, but you cant help but feel there might be something useful inside")
+                        constants.output("Open the chest? (y:yes || n:no)")
+                        do {
+                            cin >> d;
+                        } while (d != 'y' && d != 'n');
+                        if (d == 'y') {
+                            if (chance > 70) {
+                                let type = obj.randitem();
+                                let id = 0;
+                                if (type == 'S') {
+                                    id = constants.randomNumber(1, 5);
+                                }
+                                else {
+                                    id = constants.randomNumber(1, 3);
+                                }
+                                constants.output("You open up the chest, and inside you find a/an" + obj.itemname(type, id) + "!")
+                                obj.insert(type, id);
+                            }
+                            else if (chance < 70 && chance > 40) {
+                                constants.output("You open up the chest, and find nothing but cobwebs")
+                            }
+                            else {
+                                constants.output("You open up the chest....")
+                                await this.battle(obj, 0);
+                            }
+                        }
+                        else {
+                            constants.output("You chose not to open it, this lighthouse is full of dangers and that chest could just have well been another trap.")
+                        }
+                    }
+                }
+
+                i++;
+                if (i < floors - 1 && done == false && player.hp > 0) {
+                    constants.output("Keep ascending the lighthouse? (y:yes || n:no)");
+                    do {
+                        choice = await constants.input("");
+                    } while (choice != 'y' && choice != 'n');
+                    if (choice == 'n') {
+                        constants.output("You exit the lighthouse. You cannot afford to take any more risks.");
+                        i = i + floors;
+                        done = true;
+                    }
+                }
+            } while (i < floors && choice != 'n' && done != true && player.hp > 0);
+        } else {
+            constants.output("You decide against entering the lighthouse. There could have been something valuable in there, but the dangers within could prove fatal.");
+        }
+        await this.next(player);
+        return;
+    }
+
+    async function fishing(player) {
+    let type = ' ';
+    let id = 0;
+    let luck = 0;
+    let c;
+    let buf;
+    let d = 'y';
+    constants.output("You find an abandoned dock on your journey. The dock has started rotting entirely; planks fallen into the sea.");
+    constants.output("Strange enough however you notice at the end of the dock someone has left a fishing rod and bait");
+    constants.output("Would you like to go fishing? (y:yes || n:no)");
+    do {
+        c = await constants.input("Enter your choice: ");
+    } while (c != 'n' && c != 'y');
+    //Player chose to fish
+    if (c == 'y') {
+        //Variables
+        let i = 1;
+        let bait = constants.randomNumber(3, 6);
+        //Block of text to give info to player
+        constants.output("You walk to the end to the dock; taking care to avoid stepping on any rotten planks and falling into the sea below.");
+        constants.output("Whoever left the fishing pole here also left " + bait + " bait items, which means you can reel something in " + bait + " times.");
+        constants.output('_');
+        buf = await constants.input("Enter your choice: ");
+        do {
+            luck = constants.randomNumber(1, 99);
+            constants.output("You cast line #" + i + "...");
+            //Events that can occur during fishing, 1/3 chance for each event
+            if (luck < 33) {
+                let HPup = constants.randomNumber(1, 4);
+                constants.output("You reel in the line, and at the end of it you find a hearty fish!");
+                constants.output("You take the time to cook and prepare the fish, and after eating it your Hp goes up by " + HPup + " points! (Hp +" + HPup + ")");
+                player.hp += HPup;
+            }
+            else if (luck > 33 && luck < 66) {
+                genranditem(type, id);
+                constants.output("You reel in the line, and at the end of it you find a/an " + player.itemname(type, id) + "!");
+                player.insert(type, id);
+            }
+            else {
+                constants.output("You reel in the line, and you find nothing at the end of it, but you sense something sneaking up behind you...");
+                constants.output('_');
+                buf = await constants.input("Enter your choice: ");
+                battle(player, 0);
+            }
+            //If you have bait remaining, this block will run
+            i++;
+            bait--;
+            if (bait > 0 && player.hp > 0) {
+                constants.output("You have " + bait + " bait items left");
+                constants.output("Continue fishing? (y:yes || n:no)");
+                do {
+                    d = await constants.input("Enter your choice: ");
+                } while (d != 'n' && d != 'y');
+                //If player decided to quit, this block will run.
+                if (d == 'n') {
+                    constants.output("You decide to quit fishing, you reeled in the line " + i + " times already, and you don't want to risk it again.");
+                }
+            }
+            else {
+                constants.output("You have run out of bait");
+                constants.output('.');
+                buf = await constants.input("Enter your choice: ");
+                d = 'n';
+            }
+        } while (d == 'y' && bait > 0 && obj -> gethp() > 0);
+
+    }
+    else {
+
+    }
+}
+    async end(player) {
+    let buf;
+    constants.output("You've finally made it, the cruise ship is within a kilometer of you! You run towards the dock, screaming and flailing about hoping to get someone's attention.");
+    constants.output("Then suddenly, the sky blackens, a thick fog rolls in, and you are filled with an immense dread. From the ground in front of you erupts a terrible nightmare, lying in wait for you.");
+    constants.output('_');
+    buf = await constants.input("Enter your choice: ");
+    await this.battle(player, 20);
+    if (player.hp > 0) {
+        constants.output("As the beast falls, the sky clears around you, and you find yourself transported to the base of the ship. You dont remember much after that, foggy images of some kind crew members taking you aboard. When you next awaken you're safe and warm in a bed aboard the cruise ship.");
+        constants.output('.');
+        buf = await constants.input("Enter your choice: ");
+    }
+    return;
+}
+
+
     //#####################
     //EVENT ORCHESTRATORS
     //######################
 
     async unevent(player) {
-        if (constants.DEBUG)
-            constants.output("\n[Event]DEBUG: Entered Unevent function.");
+    if (constants.DEBUG)
+        constants.output("\n[Event]DEBUG: Entered Unevent function.");
 
-        let chance = constants.randomNumber(1, 50);
-        if (player.hp > 6) {
-            if (chance < 25) {
-                constants.output("You continue towards the ship, you judge it must be " + this.dist - player.delta + " kilometers away now. You feel confident about making it to the ship. You take some time to check you pockets.");
-            } else {
-                constants.output("As you continue your trek towards the ship, you feel hopeful. You've already travelled " + player.delta + " kilometers, and you know you can keep going");
-            }
+    let chance = constants.randomNumber(1, 50);
+    if (player.hp > 6) {
+        if (chance < 25) {
+            constants.output("You continue towards the ship, you judge it must be " + this.dist - player.delta + " kilometers away now. You feel confident about making it to the ship. You take some time to check you pockets.");
         } else {
-            if (chance < 25) {
-                constants.output("Your body aches, your journey thus far has not been an easy one, and you still have " + this.dist - player.delta + " kilometers to go. Your Hp has fallen to " + player.hp + ", and you have " + player.batt + " batteries for your flashlight left. You hope to muster the strength to continue onwards.");
-            } else {
-                constants.output("You walk along the path, slower now as the obstacles have taken a toll on you. You've walked " + player.delta + " kilometers already, and felt every single one. Your health has fallen to " + player.hp + ", and you have " + player.batt + " batteries remaining. You hope to find something that can lift some of this burden.");
-            }
+            constants.output("As you continue your trek towards the ship, you feel hopeful. You've already travelled " + player.delta + " kilometers, and you know you can keep going");
         }
-        if (constants.DEBUG)
-            constants.output("\n[Event]DEBUG: Health items: " + player.typePresent('H') + ".");
-        if (constants.DEBUG)
-            constants.output("\n[Event]DEBUG: Special items: " + player.typePresent('S') + ".");
-        await this.next(player);
+    } else {
+        if (chance < 25) {
+            constants.output("Your body aches, your journey thus far has not been an easy one, and you still have " + this.dist - player.delta + " kilometers to go. Your Hp has fallen to " + player.hp + ", and you have " + player.batt + " batteries for your flashlight left. You hope to muster the strength to continue onwards.");
+        } else {
+            constants.output("You walk along the path, slower now as the obstacles have taken a toll on you. You've walked " + player.delta + " kilometers already, and felt every single one. Your health has fallen to " + player.hp + ", and you have " + player.batt + " batteries remaining. You hope to find something that can lift some of this burden.");
+        }
     }
+    if (constants.DEBUG)
+        constants.output("\n[Event]DEBUG: Health items: " + player.typePresent('H') + ".");
+    if (constants.DEBUG)
+        constants.output("\n[Event]DEBUG: Special items: " + player.typePresent('S') + ".");
+    await this.next(player);
+}
 
     async eventable(player) {
-        let luck = Math.floor(Math.random() * 99) + 1;
+    let luck = Math.floor(Math.random() * 99) + 1;
+    if (constants.DEBUG)
+        constants.output("[Event]DEBUG: Called eventable for event Number:" + this._evt);
+
+    //If the player is detected as "dead", return -1 to main.
+    if (player.hp <= 0) {
         if (constants.DEBUG)
-            constants.output("[Event]DEBUG: Called eventable for event Number:" + this._evt);
-
-        //If the player is detected as "dead", return -1 to main.
-        if (player.hp <= 0) {
-            if (constants.DEBUG)
-                constants.output("[Event]DEBUG: Eventable detected player hp has fallen to or below 0; informing main");
-            return -1;
-        }
-
-        //Switch statement to reroute player to events based on ID
-        switch (this._evt) {
-            case -2:
-                await this.end(player);
-                if (player.hp > 0) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            case -1:
-                await this.start(player);
-                break;
-            case 1:
-                await this.unevent(player);
-                break;
-            case 2:
-                await this.cave(player);
-                break;
-            case 3:
-                await this.whalebones(player);
-                break;
-            case 5:
-                await this.sharkordolphin(player);
-                break;
-            case 6:
-                await this.outcrop(player);
-                break;
-            case 7:
-                await this.oldman(player);
-                break;
-            case 9:
-                await this.tree(player);
-                break;
-            case 11:
-                await this.shop(player);
-                break;
-            case 12:
-                if (luck > 66) {
-                    await this.cave(player);
-                } else if (luck < 66 && luck > 33) {
-                    await this.whalebones(player);
-                } else {
-                    await this.outcrop(player);
-                }
-                break;
-            case 13:
-                await this.lighthouse(player);
-                break;
-            case 14:
-                if (luck > 66) {
-                    await this.pirateship(player);
-                } else if (luck < 66 && luck > 33) {
-                    await this.tree(player);
-                } else {
-                    await this.oldman(player);
-                }
-                break;
-            case 15:
-                await this.fishing(player);
-                break;
-            case 17:
-                await this.pirateship(player);
-                break;
-            case 19:
-                await this.mansion(player);
-                break;
-            case 20:
-                if (luck > 66) {
-                    await this.mansion(player);
-                } else if (luck < 66 && luck > 33) {
-                    await this.lighthouse(player);
-                } else {
-                    await this.shop(player);
-                }
-                break;
-            default:
-                await this.fog(player);
-                break;
-        }
-        //Default return value if nothing is amiss.
-        return 0;
+            constants.output("[Event]DEBUG: Eventable detected player hp has fallen to or below 0; informing main");
+        return -1;
     }
+
+    //Switch statement to reroute player to events based on ID
+    switch (this._evt) {
+        case -2:
+            await this.end(player);
+            if (player.hp > 0) {
+                return 1;
+            } else {
+                return -1;
+            }
+        case -1:
+            await this.start(player);
+            break;
+        case 1:
+            await this.unevent(player);
+            break;
+        case 2:
+            await this.cave(player);
+            break;
+        case 3:
+            await this.whalebones(player);
+            break;
+        case 5:
+            await this.sharkordolphin(player);
+            break;
+        case 6:
+            await this.outcrop(player);
+            break;
+        case 7:
+            await this.oldman(player);
+            break;
+        case 9:
+            await this.tree(player);
+            break;
+        case 11:
+            await this.shop(player);
+            break;
+        case 12:
+            if (luck > 66) {
+                await this.cave(player);
+            } else if (luck < 66 && luck > 33) {
+                await this.whalebones(player);
+            } else {
+                await this.outcrop(player);
+            }
+            break;
+        case 13:
+            await this.lighthouse(player);
+            break;
+        case 14:
+            if (luck > 66) {
+                await this.pirateship(player);
+            } else if (luck < 66 && luck > 33) {
+                await this.tree(player);
+            } else {
+                await this.oldman(player);
+            }
+            break;
+        case 15:
+            await this.fishing(player);
+            break;
+        case 17:
+            await this.pirateship(player);
+            break;
+        case 19:
+            await this.mansion(player);
+            break;
+        case 20:
+            if (luck > 66) {
+                await this.mansion(player);
+            } else if (luck < 66 && luck > 33) {
+                await this.lighthouse(player);
+            } else {
+                await this.shop(player);
+            }
+            break;
+        default:
+            await this.fog(player);
+            break;
+    }
+    //Default return value if nothing is amiss.
+    return 0;
+}
 
 }
 
