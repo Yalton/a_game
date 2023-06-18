@@ -1,9 +1,12 @@
+let penv = typeof window !== 'undefined' ? 'browser' : 'node';
+let Constants;
 
-env = typeof window !== 'undefined' ? 'browser' : 'node';
-if (env === 'node')
-{
-    const Constants = require('./constants.js');
+if (penv === 'node') {
+    Constants = require('./constants.js');
+} else if (penv === 'browser') {
+    Constants = window.Constants;
 }
+
 const constants = new Constants();
 
 class Item {
@@ -16,7 +19,8 @@ class Item {
 
 class Player {
     constructor() {
-        console.log("[Player]DEBUG:Constructing player object");
+        if (constants.DEBUG)
+            constants.output("[Player]DEBUG:Constructing player object");
         this.hp = 10;
         this.dist = 0;
         this.delta = 0;
@@ -36,7 +40,7 @@ class Player {
     insert(type, val) {
         val = Number(val)
         if (constants.DEBUG)
-            console.log("[Player]DEBUG: Inserting a/an " + this.itemName(type, val) + " into Item; type is " + type + "val is: " + val);
+            constants.output("[Player]DEBUG: Inserting a/an " + this.itemName(type, val) + " into Item; type is " + type + "val is: " + val);
         if (type == 'S' || type == 'D' || type == 'O' || type == 'H') {
             let x = new Item(type, val);
             this.items.push(x);
@@ -50,7 +54,7 @@ class Player {
     remove(c, value) {
         value = Number(value)
         if (constants.DEBUG)
-            console.log(`[Player]DEBUG: Remove function called for ${this.itemName(c, value)}.`);
+            constants.output(`[Player]DEBUG: Remove function called for ${this.itemName(c, value)}.`);
         const index = this.items.findIndex(item => item.type === c && item.val === value);
         if (index !== -1) {
             this.items.splice(index, 1);
@@ -66,7 +70,7 @@ class Player {
     itemName(c, val) {
         val = Number(val)
         if (constants.DEBUG)
-            console.log("[Player]DEBUG: Calling Item name for Item; type is " + c + "val is: " + val);
+            constants.output("[Player]DEBUG: Calling Item name for Item; type is " + c + "val is: " + val);
 
         switch (c) {
             //Offence items case
@@ -153,7 +157,8 @@ class Player {
 
     damage(x) {
         this.hp -= this.dfc * x;
-        console.log(`[Player]DEBUG:In damage function. Defence rating is: ${this.dfc} Incoming Damage: ${x} Adjusted Damage: ${this.dfc * x}.`);
+        if (constants.DEBUG)
+            constants.output(`[Player]DEBUG:In damage function. Defence rating is: ${this.dfc} Incoming Damage: ${x} Adjusted Damage: ${this.dfc * x}.`);
     }
 
     async randitem() {
@@ -181,7 +186,7 @@ class Player {
                 break;
         }
         if (constants.DEBUG)
-            console.log(`[Player]DEBUG: Generating new random item with type ${type} and id ${id}.`);
+            constants.output(`[Player]DEBUG: Generating new random item with type ${type} and id ${id}.`);
         return { type, id }
     }
 
@@ -251,6 +256,10 @@ class Player {
     }
 }
 
-
-module.exports = Player;
+if (penv === 'node') {
+    module.exports = Player;
+}
+else if (penv === 'browser') {
+    window.Player = Player;
+}
 //module.exports = Item

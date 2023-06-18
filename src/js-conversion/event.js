@@ -1,17 +1,18 @@
+let eenv = typeof window !== 'undefined' ? 'browser' : 'node';
+let Constants, Player, asciiArt;
 
-
-let env = typeof window !== 'undefined' ? 'browser' : 'node';
-if (env === 'node')
-{
-    const asciiArt = require('./ascii.js');
-    const player = require('./player.js');
-    const Constants = require('./constants.js');
+if (eenv === 'node') {
+    asciiArt = require('./ascii.js');
+    Player = require('./player.js');
+    Constants = require('./constants.js');
+} else if (eenv === 'browser') {
+    Constants = window.Constants;
+    Player = window.Player;
+    asciiArt = window.asciiArt; // Fixed this, it should be window.asciiArt
 }
 
+const player = new Player();
 const constants = new Constants();
-
-// const prompt = require('prompt-sync')({ siglet: true });
-// const readlineSync = require('readline-sync');
 
 
 class Monster {
@@ -130,17 +131,17 @@ class Event {
             case 'O':
                 switch (x) {
                     case 1:
-                        asciiArt.asciknife();
+                        await asciiArt.asciknife();
                         constants.output("You take out the knife, your base damage is now 2");
                         player.dmg = 2;
                         break;
                     case 2:
-                        asciiArt.ascisword();
+                        await asciiArt.ascisword();
                         constants.output("You equip the sword, your base damage is now 3");
                         player.dmg = 3;
                         break;
                     case 3:
-                        asciiArt.ascigun();
+                        await asciiArt.ascigun();
                         constants.output("You pull out the gun, your base damage is now 5");
                         player.dmg = 5;
                         break;
@@ -149,17 +150,17 @@ class Event {
             case 'D':
                 switch (x) {
                     case 1:
-                        asciiArt.ascileather();
+                        await asciiArt.ascileather();
                         constants.output("You put on the leather shirt, and feel slightly protected (+10% Defence)");
                         player.dfc = .9;
                         break;
                     case 2:
-                        asciiArt.ascichainmail();
+                        await asciiArt.ascichainmail();
                         constants.output("You put on the chain mail, and feel much more protected. (+40% Defence)");
                         player.dfc = .6;
                         break;
                     case 3:
-                        asciiArt.asciknight();
+                        await asciiArt.asciknight();
                         constants.output("Taking your time to put on the knight armor piece by piece, and with each part of the whole you feel more and more untouchable. (80% Defense).");
                         player.dfc = .2;
                         break;
@@ -168,19 +169,19 @@ class Event {
             case 'H':
                 switch (x) {
                     case 1:
-                        asciiArt.ascibandage();
+                        await asciiArt.ascibandage();
                         constants.output(`You use the bandage on your wounds, and feel slightly better. (+${hpup}hp)`);
                         player.hp = (player.hp + hpup);
                         player.remove('H', 1);
                         break;
                     case 2:
-                        asciiArt.ascimedkit();
+                        await asciiArt.ascimedkit();
                         constants.output("The medkit has a plethora of healing items for you to choose from. Almost every wound you had can be mended now. (+5hp).");
                         player.remove('H', 2);
                         player.hp = (player.hp) + 5;
                         break;
                     case 3:
-                        asciiArt.ascistem();
+                        await asciiArt.ascistem();
                         constants.output("The Stem Cells ooze over your body, filling in your wounds and making you healthier than ever before. (hp x 2)");
                         player.remove('H', 3);
                         player.hp = player.hp * 2;
@@ -190,7 +191,7 @@ class Event {
             case 'S':
                 switch (x) {
                     case 1:
-                        asciiArt.ascibatterybox();
+                        await asciiArt.ascibatterybox();
                         player.batt = (player.batt + batt);
                         constants.output(`You open up the Battery Box, and see it contains ${batt} batteries! Your total number of batteries is now ${player.batt}.`);
                         player.remove('S', 1);
@@ -202,13 +203,13 @@ class Event {
                         player.remove('S', 2);
                         break;
                     case 3:
-                        asciiArt.asciwormholebox();
+                        await asciiArt.asciwormholebox();
                         this.wormhole(dist, player);
                         constants.output(`You hesitate at first, and then open the Wormhole box. Instantly the box pulls you into itself, you think you will be crushed inside, however instead of hitting the bottom of the box, you came out of another box ${dist} kilometers closer to the ship!`);
                         player.remove('S', 3);
                         break;
                     case 4:
-                        asciiArt.ascibattlebox();
+                        await asciiArt.ascibattlebox();
                         constants.output("You pry open the battle box, and within it you sense a sinister entity. The entity became aware of you, and clawed its way out of the box");
                         await this.battle(player, enem);
                         player.remove('S', 4);
@@ -294,7 +295,7 @@ class Event {
 
     async getItem(player) {
         const luck = constants.randomNumber(1, 100);
-    
+
         if (luck > 75) {
             const iD = constants.randomNumber(1, 3);
             constants.output(`you found a/an ${player.itemName('H', iD)}!`);
@@ -314,7 +315,7 @@ class Event {
         }
     }
 
-    
+
     async promptItem(player, type) {
         if (constants.DEBUG)
             constants.output(`[Event]DEBUG: Entering Prompt item function for type ${type}.`);
@@ -364,67 +365,67 @@ class Event {
 
         switch (id) {
             case 1:
-                asciiArt.ascilobster();
+                await asciiArt.ascilobster();
                 guy = new Monster("King Crab", 3, 2);
                 break;
             case 2:
-                asciiArt.ascipirate();
+                await asciiArt.ascipirate();
                 guy = new Monster("Pirate", 5, 3);
                 break;
             case 3:
-                asciiArt.ascicastaway();
+                await asciiArt.ascicastaway();
                 guy = new Monster("Mad Castaway", 8, 2);
                 break;
             case 4:
-                asciiArt.ascialligator();
+                await asciiArt.ascialligator();
                 guy = new Monster("Alligator", 5, 6);
                 break;
             case 5:
-                asciiArt.asciskeleton();
+                await asciiArt.asciskeleton();
                 guy = new Monster("Skeleton", 4, 4);
                 break;
             case 6:
-                asciiArt.asciameoba();
+                await asciiArt.asciameoba();
                 guy = new Monster("Giant Ameoba", 4, 6);
                 break;
             case 7:
-                asciiArt.ascisiren();
+                await asciiArt.ascisiren();
                 guy = new Monster("Siren", 7, 4);
                 break;
             case 8:
-                asciiArt.ascisquid();
+                await asciiArt.ascisquid();
                 guy = new Monster("Giant Squid", 6, 4);
                 break;
             case 9:
-                asciiArt.ascizombie();
+                await asciiArt.ascizombie();
                 guy = new Monster("Zombie", 8, 3);
                 break;
             case 10:
-                asciiArt.asciwraith();
+                await asciiArt.asciwraith();
                 guy = new Monster("Wraith", 6, 5);
                 break;
             case 11:
-                asciiArt.asciskeletonN();
+                await asciiArt.asciskeletonN();
                 guy = new Monster("Skeleton Knight", 10, 5);
                 break;
             case 12:
-                asciiArt.ascicrabdragon();
+                await asciiArt.ascicrabdragon();
                 guy = new Monster("Crab Dragon", 15, 8);
                 break;
             case 13:
-                asciiArt.ascikali();
+                await asciiArt.ascikali();
                 guy = new Monster("Kali: Hindu Goddess of Destruction.", 30, 10);
                 break;
             case 14:
-                asciiArt.ascioldman();
+                await asciiArt.ascioldman();
                 guy = new Monster("Old Man", 7, 3);
                 break;
             case 20:
-                asciiArt.asciguardian();
+                await asciiArt.asciguardian();
                 guy = new Monster("Endellos, Guardian of the ship", constants.randomNumber(16, 22), constants.randomNumber(4, 6));
                 break;
             case 999:
-                asciiArt.ascicthulu();
+                await asciiArt.ascicthulu();
                 guy = new Monster("Cthulu, Great Old One, Dreamer of R'yleh", 100000, 1000);
                 break;
             default:
@@ -449,7 +450,7 @@ class Event {
                 switch (enmove) {
                     //Player chose attack || Enemy chose attack
                     case 1:
-                        asciiArt.asciattack();
+                        await asciiArt.asciattack();
                         switch (adv) {
                             case -1:
                                 if (luck > 90) {
@@ -477,7 +478,7 @@ class Event {
                                 break;
                             case 1:
                                 if (luck > 20) {
-                                    constants.output(`You attack the dazed  ${enem.name}. They attempt to return the blow, but it is a pitiful attempt at best and you land a crushing blow on the  ${enem.name} for  ${dmg + 2 } damage!`)
+                                    constants.output(`You attack the dazed  ${enem.name}. They attempt to return the blow, but it is a pitiful attempt at best and you land a crushing blow on the  ${enem.name} for  ${dmg + 2} damage!`)
                                     enem.hp = enem.hp - (dmg + 2);
                                     return 1;
                                 }
@@ -491,7 +492,7 @@ class Event {
                         break;
                     //Player chose attack || Enemy chose block
                     case 2:
-                        asciiArt.asciblock();
+                        await asciiArt.asciblock();
                         switch (adv) {
                             case -1:
                                 if (luck > 90) {
@@ -531,7 +532,7 @@ class Event {
                         break;
                     ////Player chose attack || Enemy chose dodge
                     case 3:
-                        asciiArt.ascidodge();
+                        await asciiArt.ascidodge();
                         switch (adv) {
                             case -1:
                                 if (luck > 70) {
@@ -569,7 +570,7 @@ class Event {
                         }
                     //Player chose attack || Enemy chose grab
                     case 4:
-                        asciiArt.ascigrab();
+                        await asciiArt.ascigrab();
                         switch (adv) {
                             case -1:
                                 if (luck > 60) {
@@ -608,7 +609,7 @@ class Event {
             case 2:
                 switch (enmove) {
                     case 1:
-                        asciiArt.asciattack();
+                        await asciiArt.asciattack();
                         switch (adv) {
                             case -1:
                                 if (luck > 70) {
@@ -648,7 +649,7 @@ class Event {
                         break;
                     //Player chose block || Enemy chose block
                     case 2:
-                        asciiArt.asciblock();
+                        await asciiArt.asciblock();
                         switch (adv) {
                             case -1:
                                 constants.output(`As you struggle to regain you balance, you decide the best course of action is to block. The  ${enem.name}   decided to do the same fearing an attack from you.`)
@@ -667,7 +668,7 @@ class Event {
                         break;
                     //Player chose block || Enemy chose dodge
                     case 3:
-                        asciiArt.ascidodge();
+                        await asciiArt.ascidodge();
                         switch (adv) {
                             case -1:
                                 constants.output(`In your confused state you decide to shield yourself against whatever the  ${enem.name}   might do. However when you regain focus you notice it feared an attack from you and chose to dodge`)
@@ -686,7 +687,7 @@ class Event {
                         break;
                     //Player chose block || Enemy chose grab
                     case 4:
-                        asciiArt.ascigrab();
+                        await asciiArt.ascigrab();
                         switch (adv) {
                             case -1:
                                 if (luck > 90) {
@@ -722,7 +723,7 @@ class Event {
             case 3:
                 switch (enmove) {
                     case 1:
-                        asciiArt.asciattack();
+                        await asciiArt.asciattack();
                         switch (adv) {
                             case -1:
                                 if (luck > 80) {
@@ -760,7 +761,7 @@ class Event {
                         break;
                     //Player chose dodge || Enemy chose block
                     case 2:
-                        asciiArt.asciblock();
+                        await asciiArt.asciblock();
                         switch (adv) {
                             case -1:
                                 constants.output(`You cannot see straight, and you dont know where the  ${enem.name}   is coming from. Instinctively you dodge, and when you regain your senses you notice the  ${enem.name}   is blocking, clearly fearing an attack from you`)
@@ -779,7 +780,7 @@ class Event {
                         break;
                     //Player chose dodge || Enemy chose dodge
                     case 3:
-                        asciiArt.ascidodge();
+                        await asciiArt.ascidodge();
                         switch (adv) {
                             case -1:
                                 constants.output(`You struggle to regain you balance and roll away, from where you know the  ${enem.name}   last was, they too rolled away from you.`)
@@ -797,7 +798,7 @@ class Event {
                         break;
                     //Player chose dodge || Enemy chose grab
                     case 4:
-                        asciiArt.ascigrab();
+                        await asciiArt.ascigrab();
                         switch (adv) {
                             case -1:
                                 if (luck > 40) {
@@ -838,7 +839,7 @@ class Event {
                 switch (enmove) {
                     //Player chose grab|| Enemy chose attack
                     case 1:
-                        asciiArt.asciattack();
+                        await asciiArt.asciattack();
                         switch (adv) {
                             case -1:
                                 if (luck > 80) {
@@ -867,7 +868,7 @@ class Event {
                             case 1:
                                 if (luck > 40) {
                                     constants.output(`The  ${enem.name}   stumbles away from you aimlessly, hopeless to defend itself. You grab and beat it mercilessly for ${dmg + 2} damage!`)
-                                    enem.hp = enem.hp - (dmg + 2);
+                                    enem.hp = (enem.hp - (dmg + 2));
                                     return 0;
                                 }
                                 else {
@@ -881,7 +882,7 @@ class Event {
                         break;
                     //Player chose grab || Enemy chose block
                     case 2:
-                        asciiArt.asciblock();
+                        await asciiArt.asciblock();
                         switch (adv) {
                             case -1:
                                 if (luck > 50) {
@@ -901,14 +902,14 @@ class Event {
                                 break;
                             case 1:
                                 constants.output(`You approach the stumbling  ${enem.name}   it tries to block you, so you go for the grab deal a whopping  ${dmg + 3} damage!`)
-                                enem.hp = enem.hp - (dmg + 3);
+                                enem.hp = (enem.hp - (dmg + 3));
                                 return 0;
                                 break;
                         }
                         break;
                     //Player chose grab || Enemy chose dodge
                     case 3:
-                        asciiArt.ascidodge();
+                        await asciiArt.ascidodge();
                         switch (adv) {
                             case -1:
                                 if (luck > 90) {
@@ -942,7 +943,7 @@ class Event {
                         break;
                     //Player chose grab || Enemy chose grab
                     case 4:
-                        asciiArt.ascigrab();
+                        await asciiArt.ascigrab();
                         switch (adv) {
                             case -1:
                                 if (luck > 80) {
@@ -971,7 +972,7 @@ class Event {
                             case 1:
                                 if (luck > 30) {
                                     constants.output(`You approach the fumbling  ${enem.name}   and even while it tries to grab you, you grab it and beat it senseless. You deal  ${dmg + 2} damage!`)
-                                    enem.hp = enem.hp - dmg + 2;
+                                    enem.hp = (enem.hp - (dmg + 2));
                                     return 0;
                                 }
                                 else {
@@ -1082,7 +1083,7 @@ class Event {
         }
 
         else if (monst.hp <= 0 && player.hp > 0) {
-            asciiArt.asciwin();
+            await asciiArt.asciwin();
             player.enemfelled = player.enemfelled + 1
             let chance = constants.randomNumber(1, 50);
             constants.output(`\nThe ${monst.name} falls beaten to the ground, You have won this encounter.`);
@@ -1092,13 +1093,10 @@ class Event {
                 let item = await player.genranditem(type, id);
                 constants.output(`You notice that the defeated ${monst.name} was carrying a/an ${player.itemName(item.type, item.id)}!`);
                 player.insert(item.type, item.id);
-                await this.buffer('.');
             } else if (chance > 15 && chance < 35) {
                 let batts = constants.randomNumber(1, 4);
                 constants.output(`Much to your surprise, you also notice the ${monst.name} had ${batts} batteries, so you take them for yourself!`);
                 player.batt = (player.batt + batts);
-                await this.buffer('.');
-                buf = await constants.input("");
             }
 
             if (Oitem > 0) {
@@ -1106,11 +1104,11 @@ class Event {
                 if (luck < 20) {
                     constants.output(`You stand next to the fallen ${monst.name}. Your pride swells, but as you go to put your ${player.itemName('O', Oitem)} you notice to your dismay that it has broken.`);
                     await this.buffer('.');
-                    buf = await constants.input("");
                     if (player.remove('O', Oitem) == 0) {
                         console.error("ERROR: Attempting to remove a broken weapon; that does not exist.");
                     }
                 }
+                await this.buffer('.');
             }
 
             if (Ditem > 0) {
@@ -1154,6 +1152,7 @@ class Event {
             constants.output("Entering next function");
         }
 
+        constants.output("\n\n");
         if (player.hp > 0) {
             constants.output("================================");
             constants.output(`Hp: ${player.hp}`);
@@ -1199,7 +1198,7 @@ class Event {
     //############
     async start(player) {
         let choice;
-        asciiArt.ascibox();
+        await asciiArt.ascibox();
         constants.output("As you start down your chosen path, a box appears in front of you. This box is like no other you have seen before, you feel an entity within it, and it's as if the box is asking you something");
         constants.output("It queries, health, defence, offence, or special?");
 
@@ -1225,7 +1224,7 @@ class Event {
             player.insert('O', item);
         }
         else if (choice === "special") {
-            constants.output("You hesitate at first and then respond. 'Special' you say, and without delay the box opens up to reveal a ${player.itemName('S', item)}. You reach leto the box and grab it. Upon obtaining your ${player.itemName('S', item)} the box vanished before your eyes.");
+            constants.output(`You hesitate at first and then respond. 'Special' you say, and without delay the box opens up to reveal a ${player.itemName('S', item)}. You reach leto the box and grab it. Upon obtaining your ${player.itemName('S', item)} the box vanished before your eyes.`);
             player.insert('S', item);
         }
 
@@ -1236,7 +1235,7 @@ class Event {
     //NEEDS FIXING
     /* Cave event: Player enters a cave, and can use their flashlight to see better (give better chances), and then chooses twice between the path on the right, or the path on the left. Each path has a random chance of something happening inside that room */
     async cave(player) {
-        asciiArt.ascicave()
+        await asciiArt.ascicave()
         constants.output("You find you path blocked by a cave, on all sides of the it are water, so the only way forward is through the cave.")
         constants.output("As you enter the cave, darkness envelops you, you can scarcely make out where the walls are. You realize your flashlight would come in very handy here, but that would mean using up a battery.")
         let c = 'm';
@@ -1295,7 +1294,7 @@ class Event {
                 if (i < length && player.hp > 0) {
                     constants.output("Ahead you see the cave diverges to the right and to the left, which path do you want to take?")
                     do {
-                        choice = await constants.input("Enter your choice: ");
+                        choice = await constants.input("left or right: ");
                     } while (choice != "left" && choice != "right");
                     if (roomluck[i] > 50) {
                         //Sets luck for next room
@@ -1372,7 +1371,7 @@ class Event {
                     }
                     else {
                         let dmg = constants.randomNumber(1, 5);
-                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" ${dmg} " Hp)")
+                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" + dmg  + " Hp")
                         player.hp = (player.hp - dmg);
                         await this.buffer('.');
                     }
@@ -1380,7 +1379,7 @@ class Event {
                 if (i < length && player.hp > 0) {
                     constants.output("Ahead you can barely make out that the cave diverges to the right and to the left, which path do you want to take?")
                     do {
-                        choice = await constants.input("Enter your choice: ");
+                        choice = await constants.input("left or right: ");
                     } while (choice != "left" && choice != "right");
                     if (roomluck[i] > 50) {
                         //Assigns luck values to the next room
@@ -1545,7 +1544,7 @@ class Event {
         // Block that runs if a player decides to risk a shark attack
         if (c == 'y') {
             if (luck > 60) {
-                asciiArt.ascidolphin();
+                await asciiArt.ascidolphin();
                 let dolphdist = constants.randomNumber(3, 6);
 
                 constants.output("Just your luck, it was a dolphin! The dolphin seems overjoyed to see you, and instantly takes off towards the ship with you on it's back.");
@@ -1554,7 +1553,7 @@ class Event {
                 await this.next(player);
                 return;
             } else {
-                asciiArt.ascishark();
+                await asciiArt.ascishark();
                 player.hp = (Math.floor(player.hp / 2));
                 constants.output("As you jump in, you notice a set of jaws erupting from the water to catch you, and you know you have made a mistake. You fight with the beast for what feels like forever, and when you finally get away you're left with " + player.hp + " hp.");
                 await this.next(player);
@@ -1572,7 +1571,7 @@ class Event {
     async fog(player) {
         let c;
         let luck = constants.randomNumber(1, 50);
-        asciiArt.ascidodge();
+        await asciiArt.ascidodge();
         constants.output("You enter a thick fog, so thick you can hardly see you hands in front of you. You fear what dangers could be lurking in the fog, wholly hidden from view but apt to cause you harm.");
         constants.output("You know your flashlight could cut through this fog easily, but that would mean using a battery.");
 
@@ -1582,12 +1581,13 @@ class Event {
             } while (!['y', 'n'].includes(c));
         } else {
             constants.output("\nSadly, you are out of batteries");
+            await this.buffer('.');
             c = 'n';
         }
 
         if (c == 'y') {
             player.batt = (player.batt - 1);
-            asciiArt.ascibulb();
+            await asciiArt.ascibulb();
             if (luck > 15) {
                 constants.output("With your flashlight, you are able to see further into the fog. You see hazy outlines of what could be dangers, and stick to the path of least resistance. After what feels like an eternity, you make it through the fog.");
             } else {
@@ -1595,22 +1595,26 @@ class Event {
                 constants.output("Using the beam of your flashlight you easily cut through the fog. You see your fear was almost entirely unfounded, as the fog is devoid of any danger. As you continue along you find a " + player.itemName('H', item) + " on the ground, you know this will be useful later and decide to take it with you.");
                 player.insert('H', item);
             }
+            await this.buffer('.');
         } else if (c == 'n') {
             if (luck > 40) {
                 constants.output("You stumble through the fog blindly, terrified by every dark shape. You see things moving in the fog, and hear unholy sounds coming from the depths of it, but by some miracle you manage to make it through.");
+                await this.buffer('.');
             } else if (luck < 40 && luck > 15) {
                 constants.output("Even though you cannot see you way, you trudge forwards. You try to avoid any hazy shape you can make out in the fog, but your caution was not enough.");
                 constants.output("Something or someone in the fog attacks you, and you fall unconscious. When you come to the fog has cleared, but you're in deep pain. Hp - 3");
+                await this.buffer('.');
                 player.hp = (player.hp - 3);
             } else {
                 constants.output("You move through the fog, blind and unaware of your surroundings, and the whole time you feel as though you are being watched. You feel as though you can see the edge of the fog, when your paranoia proves to be justified.");
+                await this.buffer('.');
                 await this.battle(player, 0);
             }
         }
 
         await this.next(player);
     }
-    
+
     /* Outcrop function. Player is informed there is an item at the top of an outcropping of varying height. Player can chose to climb it to retrieve item. If player falls they lose Hp proportional to the height they climbed. They can attempt the climb as many times as they want, their chances will change every time */
     async outcrop(player) {
         let height = constants.randomNumber(3, 6);
@@ -1710,7 +1714,7 @@ class Event {
 
     /*Old man event, an old man will ask the player for an item. If they have one, they can chose to give it to him or not. If not he may attack them, if they give it to him he may give them a better one. */
     async oldman(player) {
-        asciiArt.ascioldmanevent();
+        await asciiArt.ascioldmanevent();
         let luck = constants.randomNumber(1, 100);
         constants.output("As you continue along your path, you find an old man sitting along the shore. As you approach you find it hard to discern if he is even alive or dead, but when the old man notices you he gestures weakly for you to approach him closer");
         constants.output("The old man is not able to speak, but you can tell from his weak gestures that he wants an item");
@@ -1809,7 +1813,7 @@ class Event {
     /*Tree event; Player can reach into a hole in a tree, and there is a random chance they will either get an item, get the secret key, or enter a battle event. */
     async tree(player) {
         // generates luck value
-        asciiArt.ascitree
+        await asciiArt.ascitree
         let luck = constants.randomNumber(1, 50);
         constants.output("You come upon a dead tree in the middle of your path. This tree has a large hole in the center of it, and you think there might be something inside.");
         constants.output("Do you want to reach inside? (y:yes || n: no)");
@@ -1824,7 +1828,7 @@ class Event {
             // Determines outcome based on luck variable
             if (luck > 40) {
                 constants.output("You reach into the tree, and to your suprise you feel something inside. When you pull it out you discover you have found a Mysterious Key");
-                asciiArt.ascikey(); // this is assuming that ascikey() is a function defined somewhere in your code
+                await asciiArt.ascikey(); // this is assuming that ascikey() is a function defined somewhere in your code
                 constants.output("\nYou dont know how, but somehow you understand that this key is very important.");
                 player.insert('S', -1);
             }
@@ -1848,13 +1852,13 @@ class Event {
 
     /*Shop function: Player can purchase three random items for batteries*/
     async shop(player) {
-        asciiArt.ascishop();
+        await asciiArt.ascishop();
         let type = [];
         let id = [];
         let prices = [];
 
         for (let i = 0; i < 3; i++) {
-            type[i] = this.randitem();
+            type[i] = await this.randitem();
             if (type[i] === 'S') {
                 id[i] = constants.randomNumber(1, 5);
                 prices[i] = i + constants.randomNumber(1, 3);
@@ -1863,6 +1867,9 @@ class Event {
                 prices[i] = i + constants.randomNumber(1, 2);
             }
         }
+
+        if (constants.DEBUG)
+            constants.output("[Main]DEBUG:In shop, first item in the has a type of: "+ type[0] +", and an id of: "+ id[0] +".")
 
         constants.output("\nYou approach what seems to be a small shack along the shore.");
         constants.output("When you near the shack you see there is a man inside. He is trying to say something to you, but you cant quite make out what");
@@ -1940,7 +1947,7 @@ class Event {
         let c = 'm';
         let choice = 'm';
         let luck = 0;
-        asciiArt.ascilighthouse();
+        await asciiArt.ascilighthouse();
         constants.output("\nYou approach what seems to be an abandoned lighthouse. It is at least " + floors + " floors and  " + floors * 10 + " meters tall, and it appears to be in a horrid state of disrepair. Despite all of this, you get the sense that you could find something very useful inside.");
         constants.output("Would you like to enter the lighthouse? (y:yes || n:no)");
 
@@ -1962,7 +1969,7 @@ class Event {
                     let item = await player.genranditem(type, id);
                     constants.output("\nYou made it to the top of the lighthouse, the view from up here is astounding!");
                     constants.output("You stare at the ocean around you, so entranced you don't even notice the " + player.itemName(item.type, item.id) + " on the ground right next to you!");
-                    
+
                     player.insert(item.type, item.id);
                     await this.buffer('.');
                     done = true;
@@ -2018,7 +2025,7 @@ class Event {
                                 }
                                 else {
                                     let dmg = constants.randomNumber(3, 5);
-                                    constants.output("You pull the book from the shelf, but upon doing so the entire shelf collapses on top of you,and you fall unconcious. When you come to the bookshelf is no where to be found, but your body aches and you struggle to get up. (Hp -" ${dmg} ")")
+                                    constants.output("You pull the book from the shelf, but upon doing so the entire shelf collapses on top of you,and you fall unconcious. When you come to the bookshelf is no where to be found, but your body aches and you struggle to get up. (Hp -" + dmg + ")")
                                     player.hp = (player.hp - dmg);
                                 }
                                 await this.buffer('.');
@@ -2050,11 +2057,11 @@ class Event {
                         luck = constants.randomNumber(1, 100);
                         if (abom) {
                             constants.output("An unearthly chill comes over you, unlike anything you have ever felt before. You feel eyes on you, but these eyes see more than any other, you know you have walked into your doom.")
-                            
+
 
                             constants.output("¥̷̹̩̟̘̩̠̥̞͔̫̫͆̉̒̀̊̽͌̏͒͘͝ð̴͇̥͇̖͍͓͎̩̥̂̈́̏̂̉̂̓̿̚͜͝µ̸̨̡͍͈̲̠̫͙̻̗̈́͌̈́̾̇͗̆̿̎̒̕ͅŕ̴̨̢̨̢̘̺͕̳̯̪̙͌́̇̀̍̉̋͗́͠ ̷̧̛͙͖͍̤̘̙̭̪̳͇̐̍̒̉̽́͌͂̔͝ļ̸̲̦̭̪̫͔̳̗̟͍͂̈̈́̃̎̒̌͒͠͠͠ị̸̡̧̢̥͍͍͈̤̲̦̈̈́̒̈́̒̎̄̑̍̓͠£̵̧͓̬̭̥̟͍͎̫̗̩̍́̾̃͑͛͆̋̀͝͝ê̸̢̧̛͓̬̮̗̼̗͙͚̄́̇̔̂̔̽̈́̐̕͜ ̵̛͓̘̲̺͙̼̗̥̘̱̍̄̀̔͋̉̄͝͠ͅï̶̡̝̱͈̬̞͎̼̘̯̟̏̊̃̽͆͐̆̀̈́̅͠§̷̡͍̤̻̼̖͎͈̦̻̟̃͑̀͒̊͐̎̀̊̚͠ ̸̳̫͈̖͙͎̲̖͂͊̈̎̀̄̈́̓͋̃̓͜ͅͅå̶̧̰͖̳͇̜̥̙̬̲͐̅͊̈́͐̇̉̈́̈́͘͘†̶̢͎͓̲̮͉̜͎̳͙̩̈́̉̑̾́̎͊̅͆̃͌ ̶̨̡͇̮͙̗͉̥͈̲̋̔́͗̌̿̉̄̍̕̚͜å̵̡̧͉̭̺̙̖̜̯͚̦̈̃̈́̑̿̄́̀̕͠ñ̶̞̙̯̙͙͈̗̲͓͈̻̒͋̋͛͆̋̊̊̿͝ ̸̰̹̙̖̥̼̲̜̼̲̠̊̔͂́̾͛͌̂̿̑͋ê̵̡̝͔͙͈̣̯̼̘̺͛̃̋͑̌̾͐̋̈͋́ͅñ̸̛̛͔͈̳̭͎̦̫̲̩̬̃̏̈́̅̎͂͑͝ͅÐ̸̧̛̪̠̬̹͖̞̱̱̹͕̥̯͇̳̄̀̾̅̈́͑̈́͑͗̄̉̚͘͝)")
-                            
-                            
+
+
                             player.secr = (player.secr * -1);
                             await this.buffer('.');
                             await this.battle(player, 999);
@@ -2136,7 +2143,7 @@ class Event {
     }
 
     async pirateship(player) {
-        asciiArt.ascipirateship();
+        await asciiArt.ascipirateship();
         let x = 0;
         let buf = ' ';
         let out = false;
@@ -2262,7 +2269,7 @@ class Event {
 
                 if (roomluck[2] == 0) {
                     constants.output("You already searched this room")
-                    
+
                 }
                 else if (roomluck[2] > 85) {
                     let item = await player.genranditem(type, id);
@@ -2403,8 +2410,7 @@ class Event {
         await this.next(player);
     }
 
-    async mansion(player)
-    {
+    async mansion(player) {
         //Variables
         let enter = ' ';
         let x = 0;
@@ -2413,221 +2419,186 @@ class Event {
         let buf;
         let room = "hall";
         let searchluck = Array(20).fill(0).map(() => constants.randomNumber(1, 100));
-    
+
         //Block of text and asci function to give info to player
-        asciiArt.ascimansion();
+        await asciiArt.ascimansion();
         constants.output("Along your journey you come across a massive mansion sitting on the shore. It appears abandoned, and parts of it have already begun to decay and fall into the sea below")
         constants.output("You walk up to the front door of the mansion, the eerieness of the place not eluding you for a second.")
         constants.output("The door is unlocked, would you like to enter (y:yes || n:no)")
         //Determines whether player will enter mansion or not
-        do
-        {
+        do {
             enter = await constants.input("Enter your choice:");
         } while (enter != 'y' && enter != 'n');
-    
+
         //Player chose to enter mansion
-        if (enter == 'y')
-        {
-            do
-            {
+        if (enter == 'y') {
+            do {
                 //Create a random item
                 let item = await player.genranditem(type, id);
                 //If there has been no loop yet, this block will run.
-                if (x == 0)
-                {
+                if (x == 0) {
                     constants.output("You enter the mansion, you find yourself in the great hall of the building. The smell is overwhelming, and the decay and rot is everywhere.")
                 }
                 //If player is on the first floor, this block will run.
-                if (room == "hall")
-                {
+                if (room == "hall") {
                     constants.output("From The Great Hall there are the entrances to the kitchen, and the dining room on your left; guest bedroom, and living room on your right; or you could go upstairs.")
                     constants.output("Where would you like to go? (kitchen || dining_room || guest_bedroom || living_room || upstairs || leave)")
-                    do
-                    {
+                    do {
                         room = await constants.input("Enter your choice:");
                     } while (room != "kitchen" && room != "dining_room" && room != "guest_bedroom" && room != "living_room" && room != "upstairs" && room != "leave");
                 }
                 //If player is on the second floor, this block will run.
-                else if (room == "floor2")
-                {
+                else if (room == "floor2") {
                     constants.output("From upstairs there are entrances to the bathroom, and the study on your left; master bedroom, and bedroom on your right; or you could go back downstairs to The Great Hall.")
                     constants.output("Where would you like to go? (bathroom || study || master_bedroom || bedroom || downstairs || leave)")
-                    do
-                    {
+                    do {
                         room = await constants.input("Enter your choice:");
                     } while (room != "bathroom" && room != "study" && room != "master_bedroom" && room != "bedroom" && room != "downstairs" && room != "leave");
                 }
                 //Downstairs condition.
-                else if (room == "downstairs")
-                {
+                else if (room == "downstairs") {
                     constants.output("You head back down the stairs to The Great Hall, the ancient steps creaking under your weight")
                     room = "hall";
                 }
                 //Upstairs Conditon.
-                else if (room == "upstairs")
-                {
+                else if (room == "upstairs") {
                     constants.output("You walk up the stairs of the mansion, noticing some wallpaper peeling off to reveal the mold growing underneath.")
                     room = "floor2";
                 }
                 //Leave condition.
-                else if (room == "leave")
-                {
+                else if (room == "leave") {
                     constants.output("You decide to get out of this mansion. You havent felt safe for a single moment you've been inside, and whatever else you could have found is not worth your life")
                 }
                 //Kitchen condition
-                else if (room == "kitchen")
-                {
+                else if (room == "kitchen") {
                     let search;
                     let y = 0;
-                    do
-                    {
+                    do {
                         //Text block to prlet when player first enters room.
-                        if (y == 0)
-                        {
+                        if (y == 0) {
                             constants.output("\nYou enter the kitchen; what was once clearly an amazing kitchen capable of producing fine dishes is now nothing but a putrid pile or rot.")
                         }
                         constants.output("It remains difficult to determine if you would find anything in here. Inside the kitchen there remains a fridge, a pantry, an oven, and a dishwasher.")
                         constants.output("Would you like to search something? (fridge || pantry || oven || dishwasher || leave)")
-                        do
-                        {
+                        do {
                             search = await constants.input("Enter your choice:");
                         } while (search != "fridge" && search != "pantry" && search != "oven" && search != "dishwasher" && search != "leave");
-    
+
                         if (constants.DEBUG)
                             constants.output("[Event]DEBG:Player is in kitchen, loops so far " + y + " search variable is " + search + ".")
-    
+
                         //Player searches fridge
-                        if (search == "fridge")
-                        {
-                            if (searchluck[0] == 0)
-                            {
+                        if (search == "fridge") {
+                            if (searchluck[0] == 0) {
                                 constants.output("You have already searched this.")
                             }
-                            else if (searchluck[0] > 65)
-                            {
+                            else if (searchluck[0] > 65) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You reach inside of the fridge and found a/an " + player.itemName(item.type, item.id) + "!")
+                                player.insert(item.type, item.id)
                                 searchluck[0] = 0;
                             }
-                            else
-                            {
+                            else {
                                 constants.output("You reach into the fridge, and found nothing but old rotten food.")
                                 searchluck[0] = 0;
                             }
                             await this.buffer('.');
                         }
                         //Player searches pantry
-                        else if (search == "pantry")
-                        {
-                            if (searchluck[1] == 0)
-                            {
-                                constants.output("You have already searched this.")                                
+                        else if (search == "pantry") {
+                            if (searchluck[1] == 0) {
+                                constants.output("You have already searched this.")
                             }
-                            else if (searchluck[1] > 85)
-                            {
+                            else if (searchluck[1] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search inside the pantry and find a/an " + player.itemName(item.type, item.id) + "!")
+                                player.insert(item.type, item.id)
                                 searchluck[1] = 0;
                             }
-                            else if (searchluck[1] < 85 && searchluck[1] > 55)
-                            {
+                            else if (searchluck[1] < 85 && searchluck[1] > 55) {
                                 let HPup = constants.randomNumber(1, 3);
                                 constants.output("You search inside the pantry, and much to your suprise you find a pastry that is not rotten!")
                                 constants.output("You eat the pastry and it gives you (Hp +" + HPup + ")")
                                 player.hp = (player.hp + HPup);
                                 searchluck[1] = 0;
                             }
-                            else
-                            {
+                            else {
                                 constants.output("You reach into the pantry, and found nothing but old rotten food")
                                 searchluck[1] = 0;
                             }
                             await this.buffer('.');
                         }
                         //Player searches oven
-                        else if (search == "oven")
-                        {
-                            if (searchluck[2] == 0)
-                            {
-                                constants.output("You have already searched this.")                                
+                        else if (search == "oven") {
+                            if (searchluck[2] == 0) {
+                                constants.output("You have already searched this.")
                             }
-                            else if (searchluck[2] > 75)
-                            {
+                            else if (searchluck[2] > 75) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You open up the oven, and found a/an " + player.itemName(item.type, item.id) + "!")
+                                player.insert(item.type, item.id)
                                 searchluck[2] = 0;
                             }
-    
-                            else if (searchluck[2] < 75 && searchluck[2] > 40)
-                            {
+
+                            else if (searchluck[2] < 75 && searchluck[2] > 40) {
                                 let dmg = constants.randomNumber(1, 4);
                                 constants.output("You grab the oven handle to open it up, but for some reason it is scorching hot.")
-                                constants.output("You pull your hand away as fast you can, but it still managed to burn you (Hp -" ${dmg} ")")
+                                constants.output("You pull your hand away as fast you can, but it still managed to burn you (Hp -" + dmg + ")")
                                 player.hp = (player.hp - dmg);
                                 searchluck[2] = 0;
                             }
-                            else
-                            {
+                            else {
                                 constants.output("You open up the oven, and find nothing")
                                 searchluck[2] = 0;
                             }
                             await this.buffer('.');
                         }
                         //Player searches dishwasher
-                        else if (search == "dishwasher")
-                        {
-                            if (searchluck[3] == 0)
-                            {
+                        else if (search == "dishwasher") {
+                            if (searchluck[3] == 0) {
                                 constants.output("You have already searched this.")
                                 await this.buffer('.');
-                                
+
                             }
-                            else if (searchluck[3] > 85)
-                            {
+                            else if (searchluck[3] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search inside the dishwasher and find a/an " + player.itemName(item.type, item.id) + "!")
+                                player.insert(item.type, item.id)
                                 searchluck[3] = 0;
                             }
-                            else if (searchluck[1] < 85 && searchluck[1] > 55)
-                            {
+                            else if (searchluck[1] < 85 && searchluck[1] > 55) {
                                 let batt = constants.randomNumber(1, 3);
                                 constants.output("You search inside of the dishwasher, and to your ruprise you find " + batt + "batteries!")
                                 player.batt = (player.batt + batt);
                                 searchluck[3] = 0;
                             }
-                            else
-                            {
+                            else {
                                 constants.output("You open up the dishwasher and find nothing but old broken plates.")
                                 searchluck[3] = 0;
                             }
                             await this.buffer('.');
                         }
-                        else if (search == "leave")
-                        {
+                        else if (search == "leave") {
                             constants.output("You exit the kitchen, and return to The Great Hall")
                             room = "hall";
                         }
                         //Variable to track "time" in kitchen
                         y++;
                     } while (search != "leave" && y < constants.MAX_LOOP);
-                    if (y >= constants.MAX_LOOP)
-                    {
+                    if (y >= constants.MAX_LOOP) {
                         console.error("ERROR:In mansion function, Kitchen loop exceeded max alllowed loops. Killing program.")
                         process.exit(1);
                     }
                 }
                 //Dining room condition
-                else if (room == "dining_room")
-                {
+                else if (room == "dining_room") {
                     //Player has already been in here
-                    if (searchluck[4] == 0)
-                    {
-                        constants.output("You've already searched this room")                        
+                    if (searchluck[4] == 0) {
+                        constants.output("You've already searched this room")
                         room = "hall";
                     }
                     //Player gets battle
-                    else if (searchluck[4] > 50)
-                    {
+                    else if (searchluck[4] > 50) {
                         constants.output("As soon as you enter this room, you feel a sense of doom wash over you")
                         await this.buffer('_')
                         await this.battle(player, 0);
@@ -2635,155 +2606,131 @@ class Event {
                         room = "hall";
                     }
                     //Player gets nothing
-                    else
-                    {
+                    else {
                         constants.output("You walk into the dining room. It is just as decayed as the rest of the manor, furniture strewn about and rotting, and an overhwlming feeling of dread no matter where you look")
-                        constants.output("There is clearly nothing for you here, so you decide to make your way back to The Great Hall")                        
+                        constants.output("There is clearly nothing for you here, so you decide to make your way back to The Great Hall")
                         searchluck[4] = 0;
                         room = "hall";
                     }
                     await this.buffer('_');
                 }
                 //Guest bedroom conditiion
-                else if (room == "guest_bedroom")
-                {
+                else if (room == "guest_bedroom") {
                     let search;
                     let y = 0;
-                    do
-                    {
+                    do {
                         //Starting text block
-                        if (y == 0)
-                        {
+                        if (y == 0) {
                             constants.output("\nThe guest bedroom is littered with clothing, both women's and men's. Every article of clothing is in tatters")
                             constants.output("The rest of the bedroom is falling apart, there are holes in the walls you can see the ocean through, and there is an overwhelming sense that the whole thing may just collapse in on itself at any moment")
                             constants.output("Inside of the bedroom there are some things more intact than others. A nightstand, a closet, and a dresser.")
                         }
                         constants.output("Would you like to search something? (nightstand || closet || dresser || leave)")
-                        do
-                        {
+                        do {
                             search = await constants.input("Enter your choice:");
                         } while (search != "nightstand" && search != "closet" && search != "dresser" && search != "leave");
-    
+
                         if (constants.DEBUG)
                             constants.output("[Event]DEBUG:Player is in guest bedroom, loops so far " + y + " search variable is " + search + ".")
-    
+
                         //Player chose to search nightstand
-                        if (search == "nightstand")
-                        {
+                        if (search == "nightstand") {
                             //Player has already searched
-                            if (searchluck[5] == 0)
-                            {
+                            if (searchluck[5] == 0) {
                                 constants.output("You've already searched this")
-                                
+
                             }
                             //Player gets item
-                            else if (searchluck[5] > 85)
-                            {
+                            else if (searchluck[5] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You pull open the drawer on the nightstand, and inside of it you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[5] = 0;
                             }
                             //Player gets batteries
-                            else if (searchluck[5] < 85 && searchluck[5] > 45)
-                            {
+                            else if (searchluck[5] < 85 && searchluck[5] > 45) {
                                 let batt = constants.randomNumber(1, 3);
                                 constants.output("You open up the drawer on the nightstand, and inside ypu find " + batt + " batteries!")
                                 player.batt = (player.batt + batt);
                                 searchluck[5] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You open up the drawer on the nightstand and found, nothing.")
                                 searchluck[5] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Player chose to search closet
-                        else if (search == "closet")
-                        {
+                        else if (search == "closet") {
                             //Player has already searched closet
-                            if (searchluck[6] == 0)
-                            {
-                                constants.output("You've already searched this")                                
+                            if (searchluck[6] == 0) {
+                                constants.output("You've already searched this")
                             }
                             //Player gets item
-                            else if (searchluck[6] > 75)
-                            {
+                            else if (searchluck[6] > 75) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You walk into the closet, and inside of it you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[6] = 0;
                             }
                             //Player enters battle
-                            else if (searchluck[6] < 75 && searchluck[6] > 45)
-                            {
+                            else if (searchluck[6] < 75 && searchluck[6] > 45) {
                                 constants.output("You open up the closet, and instantly you regret it.")
                                 await this.buffer('_');
                                 await this.battle(player, 0);
                                 searchluck[6] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You walk into the closet, and inside you find nothing.")
                                 searchluck[6] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Player searches dresser
-                        else if (search == "dresser")
-                        {
+                        else if (search == "dresser") {
                             //Player has already searched dresser
-                            if (searchluck[7] == 0)
-                            {
+                            if (searchluck[7] == 0) {
                                 constants.output("You've already searched this")
-                                
+
                             }
                             //Player gets +Hp
-                            else if (searchluck[7] > 75)
-                            {
+                            else if (searchluck[7] > 75) {
                                 let HPup = constants.randomNumber(1, 3);
                                 constants.output("You open up the dresser, and inside of it you find a partially used bandage (Hp +" + HPup + ")")
                                 player.hp = (player.hp + HPup);
                                 searchluck[7] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You open up the dresser, and inside you find nothing.")
                                 searchluck[7] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Leave condition
-                        else if (search == "leave")
-                        {
+                        else if (search == "leave") {
                             constants.output("You exit the guest bedroom, and return to The Great Hall")
                             room = "hall";
                         }
                         //Variable to track "time" in kitchen
                         y++;
                     } while (search != "leave" && y < constants.MAX_LOOP);
-                    if (y >= constants.MAX_LOOP)
-                    {
+                    if (y >= constants.MAX_LOOP) {
                         console.error("ERROR:In mansion function, Kitchen loop exceeded max alllowed loops. Killing program.")
                         process.exit(1);
                     }
                 }
                 //Living room condition
-                else if (room == "living_room")
-                {
+                else if (room == "living_room") {
                     //Player has already searched
-                    if (searchluck[8] == 0)
-                    {
-                        constants.output("You've already searched this room")                        
+                    if (searchluck[8] == 0) {
+                        constants.output("You've already searched this room")
                         room = "hall";
                     }
                     //Player gets battle
-                    else if (searchluck[8] > 65)
-                    {
+                    else if (searchluck[8] > 65) {
                         constants.output("Upon entering the living room, you begin to fear death.")
                         await this.buffer('_');
                         await this.battle(player, 0);
@@ -2791,71 +2738,61 @@ class Event {
                         room = "hall";
                     }
                     //Player gets item
-                    else if (searchluck[8] < 65 && searchluck[8] > 35)
-                    {
+                    else if (searchluck[8] < 65 && searchluck[8] > 35) {
                         let item = await player.genranditem(type, id);
                         constants.output("You enter the living room, it's entirely rotten and disgusting like everything else, but out of the corner of your eye you see something glistening")
-                        constants.output("Its a/an " + player.itemName(item.type, item.id) + "!")                        
+                        constants.output("Its a/an " + player.itemName(item.type, item.id) + "!")
                         player.insert(item.type, item.id);
                         searchluck[8] = 0;
                         room = "hall";
                     }
                     //Player gets nothing
-                    else
-                    {
+                    else {
                         constants.output("The living room is just as disgusting as the rest of the house, nobody is or could be able live in this room")
-                        constants.output("There is clearly nothing for you here, so you decide to make your way back to The Great Hall")                        
+                        constants.output("There is clearly nothing for you here, so you decide to make your way back to The Great Hall")
                         searchluck[8] = 0;
                         room = "hall";
                     }
                     await this.buffer('_');
                 }
-    
+
                 //Upstairs conditions
-    
+
                 //Master bedroom contion
-                else if (room == "master_bedroom")
-                {
+                else if (room == "master_bedroom") {
                     let search;
                     let buf;
                     let y = 0;
                     constants.output("You enter the master bedroom, what was once a very luxurious space for the owner of the mansion, was now so far gone it was impossible to imagine anyone living here")
                     constants.output("Despite all of this rot, there are a few areas of the room that catch your eye. Those being the bed, the closet, the dresser, the wardrobe, and the desk.")
-                    do
-                    {
+                    do {
                         constants.output("What would you like to search? (bed || closet || dresser || wardrobe || desk || leave)")
-                        do
-                        {
+                        do {
                             search = await constants.input("Enter your choice:");
                         } while (search != "bed" && search != "closet" && search != "dresser" && search != "wardrobe" && search != "desk" && search != "leave");
                         //Player chose to search bed
-                        if (search == "bed")
-                        {
+                        if (search == "bed") {
                             //Player has already searched
-                            if (searchluck[14] == 0)
-                            {
+                            if (searchluck[14] == 0) {
                                 constants.output("You already searched this")
-                                
+
                             }
                             //Player gets item
-                            else if (searchluck[14] > 75)
-                            {
+                            else if (searchluck[14] > 75) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search the bed, it is largely molding and you're sure it would be disgustingly squishy if you tried to lay on it; despite all of this under the sheets you find a/an" + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[14] = 0;
                             }
                             //Player gets batteries
-                            else if (searchluck[14] < 75 && searchluck[14] > 35)
-                            {
+                            else if (searchluck[14] < 75 && searchluck[14] > 35) {
                                 let batt = constants.randomNumber(1, 3);
                                 constants.output("As you pull back the sheets on the bed you find many indescribably horrible things, however you also manage to find " + batt + " batteries!")
                                 player.batt = (player.batt + batt);
                                 searchluck[14] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 await this.buffer('.');
                                 searchluck[14] = 0;
@@ -2863,33 +2800,28 @@ class Event {
                             await this.buffer('_');
                         }
                         //Player chose to search closet
-                        else if (search == "closet")
-                        {
+                        else if (search == "closet") {
                             //Player has already searched
-                            if (searchluck[15] == 0)
-                            {
+                            if (searchluck[15] == 0) {
                                 constants.output("You already searched this")
-                                
+
                             }
                             //Player gets item
-                            else if (searchluck[15] > 65)
-                            {
+                            else if (searchluck[15] > 65) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You swing open the door to the closet, and inside you find a/an" + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[15] = 0;
                             }
                             //Player gets battle
-                            else if (searchluck[15] < 65 && searchluck[14] > 25)
-                            {
+                            else if (searchluck[15] < 65 && searchluck[14] > 25) {
                                 constants.output("You open the closet door, and before you even have time to react something jumps out at you!")
                                 await this.buffer('_');
                                 await this.battle(player, 0);
                                 searchluck[15] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 await this.buffer('.');
                                 searchluck[15] = 0;
@@ -2897,193 +2829,167 @@ class Event {
                             await this.buffer('_');
                         }
                         //Player chose to search dresser
-                        else if (search == "dresser")
-                        {
+                        else if (search == "dresser") {
                             //Player has already searched
-                            if (searchluck[16] == 0)
-                            {
-                                constants.output("You already searched this")                                
+                            if (searchluck[16] == 0) {
+                                constants.output("You already searched this")
                             }
                             //Player gets item
-                            else if (searchluck[16] > 85)
-                            {
+                            else if (searchluck[16] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You start opening drawers on the dresser, most of them are empty, or just full of useless thing. However in the last drawer you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[16] = 0;
                             }
                             //Player gets hp
-                            else if (searchluck[16] < 85 && searchluck[16] > 55)
-                            {
+                            else if (searchluck[16] < 85 && searchluck[16] > 55) {
                                 let HPup = constants.randomNumber(1, 3);
                                 constants.output("You start opening drawers in the dresser, not many items are of use to you, but you do manage to find a mostly used bandage! (Hp +" + HPup + ").")
                                 player.hp = (player.hp + HPup);
                                 searchluck[16] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[16] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Player chose to search wardrobe
-                        else if (search == "wardrobe")
-                        {
+                        else if (search == "wardrobe") {
                             //Player has already searched
-                            if (searchluck[17] == 0)
-                            {
+                            if (searchluck[17] == 0) {
                                 constants.output("You already searched this")
-                                
+
                             }
                             //Player gets item
-                            else if (searchluck[17] > 85)
-                            {
+                            else if (searchluck[17] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search the wardrobe, at first it seems empty and then you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[17] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[17] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Player chose to search desk
-                        else if (search == "desk")
-                        {
+                        else if (search == "desk") {
                             //Player has already searched
-                            if (searchluck[18] == 0)
-                            {
+                            if (searchluck[18] == 0) {
                                 constants.output("You already searched this")
-                                
+
                             }
                             //Player gets item
-                            else if (searchluck[18] > 85)
-                            {
+                            else if (searchluck[18] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search the desk, and you find a/an" + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[18] = 0;
                             }
                             //Player gets batteries
-                            else if (searchluck[18] < 85 && searchluck[18] > 55)
-                            {
+                            else if (searchluck[18] < 85 && searchluck[18] > 55) {
                                 let batt = constants.randomNumber(1, 3);
                                 constants.output("You search the desk, and find " + batt + " batteries! ")
                                 player.batt = (player.batt + batt);
                                 searchluck[18] = 0;
                             }
                             //Player gets hp
-                            else if (searchluck[18] < 55 && searchluck[18] > 25)
-                            {
+                            else if (searchluck[18] < 55 && searchluck[18] > 25) {
                                 let HPup = constants.randomNumber(1, 3);
                                 constants.output("You start opening drawers in the desk, not many items are of use to you, but you do manage to find a mostly used bandage! (Hp +" + HPup + ").")
                                 player.hp = (player.hp + HPup);
                                 searchluck[18] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[18] = 0;
                             }
                             await this.buffer('_');
                         }
                         //Player chose to leave
-                        else if (search == "leave")
-                        {
+                        else if (search == "leave") {
                             constants.output("You exit the master bedroom, and return to the upstairs hall")
                             room = "floor2";
                         }
                         y++;
-    
+
                     } while (search != "leave" && player.hp > 0 && y < constants.MAX_LOOP);
                 }
-    
+
                 //Bathroom condition
-                else if (room == "bathroom")
-                {
+                else if (room == "bathroom") {
                     //Player has already searched
-                    if (searchluck[13] == 0)
-                    {
+                    if (searchluck[13] == 0) {
                         constants.output("You've already searched this room")
-                        
+
                         room = "floor2";
                     }
                     //Player gets battle
-                    else if (searchluck[13] > 75)
-                    {
+                    else if (searchluck[13] > 75) {
                         constants.output("You enter the bathroom, and you know you are not alone.")
                         await this.buffer('_');
-                        
+
                         await this.battle(player, 0);
                         searchluck[13] = 0;
                         room = "floor2";
                     }
                     //Player gets item
-                    else if (searchluck[13] < 75 && searchluck[13] > 45)
-                    {
+                    else if (searchluck[13] < 75 && searchluck[13] > 45) {
                         let item = await player.genranditem(type, id);
                         constants.output("The bathroom is horrid, but you're eyes land on something not sp horrid in the bathtub")
                         constants.output("Its a/an " + player.itemName(item.type, item.id) + "!")
-                        
+
                         player.insert(item.type, item.id);
                         searchluck[13] = 0;
                         room = "floor2";
                     }
                     //Player gets nothing
-                    else
-                    {
+                    else {
                         constants.output("The bathroom is covered in black mold, and rot. The smell is unberable and the stains on the walls are unthinkable")
-                        constants.output("There is clearly nothing for you here, so you decide to make your way back to the upstairs hall")                        
+                        constants.output("There is clearly nothing for you here, so you decide to make your way back to the upstairs hall")
                         searchluck[13] = 0;
                         room = "floor2";
                     }
                     await this.buffer('.');
 
                 }
-    
+
                 //Bedroom condtion
-                else if (room == "bedroom")
-                {
+                else if (room == "bedroom") {
                     //Player has already searched
-                    if (searchluck[12] == 0)
-                    {
-                        constants.output("You've already searched this room")                        
+                    if (searchluck[12] == 0) {
+                        constants.output("You've already searched this room")
                         room = "floor2";
                     }
                     //Player gets battle
-                    else if (searchluck[12] > 55)
-                    {
+                    else if (searchluck[12] > 55) {
                         constants.output("You enter the bedroom, and you know you are not alone.")
                         await this.buffer('_');
-                        
+
                         await this.battle(player, 0);
                         searchluck[12] = 0;
                         room = "floor2";
                     }
                     //Player gets item
-                    else if (searchluck[12] < 55 && searchluck[12] > 25)
-                    {
+                    else if (searchluck[12] < 55 && searchluck[12] > 25) {
                         let item = await player.genranditem(type, id);
                         constants.output("The bedroom is so bland you hardly even notice it, as your attention is drawn away from the room and towards the shiny thing on the bed.")
-                        constants.output("Its a/an " + player.itemName(item.type, item.id) + "!")                        
+                        constants.output("Its a/an " + player.itemName(item.type, item.id) + "!")
                         player.insert(item.type, item.id);
                         searchluck[12] = 0;
                         room = "floor2";
                     }
                     //Player gets nothing
-                    else
-                    {
+                    else {
                         constants.output("The bedroom is dillipidated, molding, and somehow has a worse smell than any other room in the house")
                         constants.output("There is clearly nothing for you here, so you decide to make your way back to the upstairs hall")
                         await this.buffer('.');
-                        
+
                         searchluck[12] = 0;
                         room = "floor2";
                     }
@@ -3091,189 +2997,164 @@ class Event {
 
                 }
                 //Study condition
-                else if (room == "study")
-                {
+                else if (room == "study") {
                     let search;
                     let y = 0;
                     constants.output("You enter the study, and it is miraculously well kept. The walls are still rotten like the rest of the house, but it seems as though the furniture inside of the room has been made immune to the ravages of entropy.")
                     //Player has mysterious key
-                    if (player.doesHave('S', -1))
-                    {
+                    if (player.doesHave('S', -1)) {
                         let open = 'm';
                         constants.output("You are drawn to a door in the room you did not see at first. It appears ancient in origin, and covered in writing in a language you do not understand.")
                         constants.output("The key you found earlier is getting lighter somehow; almost as if the door is pulling it out of your pocket.")
                         constants.output("You arent sure how you know, but you're certain this door can be opened with the Mysterious Key")
                         constants.output("Open the door? (y:yes||n:no)")
-                        do
-                        {
+                        do {
                             open = await constants.input("");
                         } while (open != 'y' && open != 'n');
                         //Player has chosen to fight Kali
-                        if (open == 'y')
-                        {
+                        if (open == 'y') {
                             constants.output("You take the key out of your pocket and bring it to the lock. You insert the key into the lock and turn it")
                             constants.output("Upon turning the lock, the room fills with thousands of screams, the writing on the door begins to glow, and in your mind all you can see is the cosmos itself gasping it's last breath before being snuffed out by whatever is in that room")
                             constants.output("(C̶͕̥̗̿̽̈́̾͊̌͒̈́͋ͅǫ̵̼̺̟̣͉̫̖̇͂̈́͂̀͝ņ̶̖͚̮͍͕̭̼͉͂̓̐̑́̽͋̇̚ẗ̴̯̙̤̥́̀̓i̸̮̘̿n̶̪̥̓̒̒̑͋̄̋̃̉̕ű̴̢̲̜̟̻̤͙̓ḙ̸͉̮̣̟̥̐͊͘.̶̙̺̣̌̾̽͊͝.̶̧̤̲͖̗̞͚̤͖̲͐̈́̎͐͌̀͝.̷̳͔̦͇̜̜̰͚͔̿́ͅ.̴̢̻̳͈͊(̷̡̘̼͙̹̯̟̰̻̔̋͐͑A̴̧̡͉͕͈̖̻̜̒͋n̵̰̫͌̅͋̈͗͑̒͠ỳ̷̫͍̬͎̼̝̞͚́ͅ ̸̻͕̳͓͔̫̒ͅḵ̶́̇è̵͙̜̺̺͖̄̌̾͌̀͝y̸̜̟̪̱͇̬̼͎̅̄́̈́)̴̥̯͇̳͑͗̄̉)")
-                            
+
                             player.secr = (player.secr * 2);
                             await this.buffer('.');
                             await this.battle(player, 13);
                         }
                         //Player avoided kali at all kallosts
-                        else
-                        {
+                        else {
                             constants.output("You decide against opening the door, anything could be beyond that and you dont have a good feeling about it.")
                         }
                     }
                     constants.output("Inside this room you find your attenton drawn to a few key things.Those being The desk, the bookshelf, and the cabinet")
-                    do
-                    {
+                    do {
                         constants.output("What would you like to search? (desk || bookshelf || cabinet || leave)")
-                        do
-                        {
+                        do {
                             search = await constants.input("Enter your choice:");
                         } while (search != "desk" && search != "bookshelf" && search != "cabinet" && search != "leave");
-                        if (search == "desk")
-                        {
+                        if (search == "desk") {
                             //Player already searched this
-                            if (searchluck[9] == 0)
-                            {
+                            if (searchluck[9] == 0) {
                                 constants.output("You've already searched this")
-                                
+
                             }
                             //Player gets an item
-                            else if (searchluck[9] > 75)
-                            {
+                            else if (searchluck[9] > 75) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You rifle through the drawers in the desk, until you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[9] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[9] = 0;
                             }
                             await this.buffer('.');
                         }
-                        else if (search == "bookshelf")
-                        {
-                            if (searchluck[10] == 0)
-                            {
+                        else if (search == "bookshelf") {
+                            if (searchluck[10] == 0) {
                                 constants.output("You've already searched this")
                                 await this.buffer('.');
-                                
+
                             }
                             //Player gets an item
-                            else if (searchluck[10] > 65)
-                            {
+                            else if (searchluck[10] > 65) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search every row of the bookshelf, until you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[10] = 0;
                             }
                             //Player gets damaged
-                            else if (searchluck[10] < 65 && searchluck[10] > 25)
-                            {
+                            else if (searchluck[10] < 65 && searchluck[10] > 25) {
                                 let dmg = constants.randomNumber(1, 4);
-                                constants.output("You search every inch of the bookshelf, but it was not as sturdy as you thought it was, and the whole bookshelf collapses on top of you. (Hp -" ${dmg} ")")
+                                constants.output("You search every inch of the bookshelf, but it was not as sturdy as you thought it was, and the whole bookshelf collapses on top of you. (Hp -" + dmg + ")")
                                 player.hp = (player.hp - dmg);
                                 searchluck[10] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[10] = 0;
                             }
                             await this.buffer('.');
                         }
-                        else if (search == "cabinet")
-                        {
+                        else if (search == "cabinet") {
                             //Player has already searched this
-                            if (searchluck[11] == 0)
-                            {
+                            if (searchluck[11] == 0) {
                                 constants.output("You've already searched this")
                             }
                             //Player gets an item
-                            else if (searchluck[11] > 85)
-                            {
+                            else if (searchluck[11] > 85) {
                                 let item = await player.genranditem(type, id);
                                 constants.output("You search every inch of the cabinet, until you find a/an " + player.itemName(item.type, item.id) + "!")
                                 player.insert(item.type, item.id);
                                 searchluck[11] = 0;
                             }
-                            else if (searchluck[11] < 85 && searchluck[11] > 55)
-                            {
+                            else if (searchluck[11] < 85 && searchluck[11] > 55) {
                                 let batt = constants.randomNumber(1, 3);
                                 constants.output("You search every inch of the cabinet and manage to find " + batt + " batteries!")
                                 player.batt = (player.batt + batt);
                                 searchluck[11] = 0;
                             }
                             //Player gets nothing
-                            else
-                            {
+                            else {
                                 constants.output("You found nothing")
                                 searchluck[11] = 0;
                             }
                             await this.buffer('.');
                         }
-                        else if (search == "leave")
-                        {
+                        else if (search == "leave") {
                             constants.output("You decide to leave the study, and return to the upstairs hall")
                             room = "floor2";
                         }
                         y++;
                     } while (search != "leave" && y < constants.MAX_LOOP);
-                    if (y >= constants.MAX_LOOP)
-                    {
+                    if (y >= constants.MAX_LOOP) {
                         console.error("ERROR: In study condition, constants.MAX_LOOP has been reached. Killing program.")
                         process.exit(1);
                     }
                     await this.buffer('.');
 
                 }
-    
+
                 if (constants.DEBUG)
                     constants.output("[Event]DEBUG:In mansion function, loops so far: " + x + " room is " + room + ".")
                 //x keeps track of # of loops.
                 x++;
             } while (room != "leave" && player.hp > 0 && x < constants.MAX_LOOP);
-    
+
             //if x exceedes a given maximum, end the program; Prevents infinite loops.
-            if (x >= constants.MAX_LOOP)
-            {
+            if (x >= constants.MAX_LOOP) {
                 console.error("ERROR: Mansion function exceeded maximum loop allowance, killing program")
                 process.exit(1);
             }
         }
-    
+
         //Player chose not to enter mansion
-        else
-        {
+        else {
             constants.output("For a moment you hesitate, and then come to your senses. You need to be getting to the ship, the last thing you need is to waste your time with creepy mansions.")
         }
-    
+
         await this.buffer('.');
-        
-    
+
+
         //Move to next playerext in list
         await this.next(player);
         return;
     }
-    
-    async end(player) {
-        player.insert('H', 3);
-        player.insert('O', 3);
-        player.insert('D', 3);
 
-        asciiArt.ascicruise()
+    async end(player) {
+        // player.insert('H', 3);
+        // player.insert('O', 3);
+        // player.insert('D', 3);
+
+        await asciiArt.ascicruise()
         constants.output("You've finally made it, the cruise ship is within a kilometer of you! You run towards the dock, screaming and flailing about hoping to get someone's attention.");
         constants.output("Then suddenly, the sky blackens, a thick fog rolls in, and you are filled with an immense dread. From the ground in front of you erupts a terrible nightmare, lying in wait for you.");
 
         constants.output("¥̸̡̛̛͈̩̥̦̲̲̞͇͍͌̅̏͛̿͐̀̍͠ͅð̵̢̯̞͇̠͙͍̟̞̹͐͋̐̿͌̊̚̕͜͝͝µ̸̡̩͈̘͈̝̭̬̘͕̽͂̔̉̉̅̔̈́̉̋͜ ̸̢̢̯̲͔̬͕̖̪̭̟̅̾̓̇̀͆̓͒̎͊̕§̴̧̧͖͚̣̳͕̗̳̻͐͂̏̉̈́̄͒́̉̚͠ͅh̸̡̠̞̝̮͙̤̜̤̪̲̃͒͂̀͊̍̇̉̔̑͘å̵̛̮̻̯̥̼̯̗͖̪̤̲̊̽̓͛̾̃̽̔̿̿l̵͙͍̬̠͚̪̬̪̦̬̬̏̂́͆͗̓̓̔́̋l̵̤͕͈̪̖̘̲̻͇̼̻̓̏̌̒̓̔̽͂̆̈́̕ ̷͈̜̙̙̙͙̗̪̗̰͗͗̄̂̒̓̆̄́͠͝g̴̢̢̱̠͔̯̰̜̪̟͕̿͗͊̽̍̈́͂̓̓͘͘ð̶̧̥̞͙̘̯̗̳̙̹̪̉̃̅̐́͂̽̿̈̌͘ ̷͔̠̗̗̘͇͓͔̹͐͛́͆̃̓̅͊͜͜͝͝͝ñ̵̨̺͉̩̲͈̝͔̰̹̹̋̌̆̃͌̆͑̑̅̚͝ð̶̧̭̹͓̥̤̺͖̭̦́̃͑̃̌̈́̀̃͂͑͜͝ ̷̧̨̲̮̞̝̥͔͇̘͗́̈́̉̂͊̊́̇̍̕͜£̶̨̛̬̫̲̟̙̹͈͎̗̬͛́̅̓̇́͆̈́̀̐µ̴̡̛͈̗̫̖̳̬̭̟̊̽̾͑̏̆͗̕̚͝ͅͅr̸̡̟͖̼̫̭̱̠̳̮̃̔́͒̅͋̃̌̒͗͝†̶̛̯͕͕̹̦̠̘̥͈̻̞̈́͊͗̈́͋͑͋͌̕͝h̴̢̛̗͇̲̹̫̗̞̣̣͉̋͗̐͆̋̀̒̐͝ê̸̡̫̠͙͉̳̫͖͒̉̃̀̀͋̽̌̇͜͝͝ͅͅr̸̛̘̙͉̹̣̰̳̣̖͎̒̊̈̈́͑̃̈́̊͊͝ͅ")
-        
+
         constants.output('_');
         await this.buffer('.')
         await this.battle(player, 20);
@@ -3296,15 +3177,15 @@ class Event {
         let chance = constants.randomNumber(1, 50);
         if (player.hp > 6) {
             if (chance < 25) {
-                constants.output("You continue towards the ship, you judge it must be " + this.dist - player.delta + " kilometers away now. You feel confident about making it to the ship. You take some time to check you pockets.");
+                constants.output(`You continue towards the ship, you judge it must be ${player.dist - player.delta} kilometers away now. You feel confident about making it to the ship. You take some time to check you pockets.`);
             } else {
-                constants.output("As you continue your trek towards the ship, you feel hopeful. You've already travelled " + player.delta + " kilometers, and you know you can keep going");
+                constants.output(`As you continue your trek towards the ship, you feel hopeful. You've already travelled  ${player.delta}  kilometers, and you know you can keep going`);
             }
         } else {
             if (chance < 25) {
-                constants.output("Your body aches, your journey thus far has not been an easy one, and you still have " + this.dist - player.delta + " kilometers to go. Your Hp has fallen to " + player.hp + ", and you have " + player.batt + " batteries for your flashlight left. You hope to muster the strength to continue onwards.");
+                constants.output(`Your body aches, your journey thus far has not been an easy one, and you still have  ${player.dist - player.delta} kilometers to go. Your Hp has fallen to ${player.hp}, and you have ${player.batt} batteries for your flashlight left. You hope to muster the strength to continue onwards.`);
             } else {
-                constants.output("You walk along the path, slower now as the obstacles have taken a toll on you. You've walked " + player.delta + " kilometers already, and felt every single one. Your health has fallen to " + player.hp + ", and you have " + player.batt + " batteries remaining. You hope to find something that can lift some of this burden.");
+                constants.output(`You walk along the path, slower now as the obstacles have taken a toll on you. You've walked ${player.delta} kilometers already, and felt every single one. Your health has fallen to ${player.hp}, and you have ${player.batt} batteries remaining. You hope to find something that can lift some of this burden.`);
             }
         }
         if (constants.DEBUG)
@@ -3489,7 +3370,7 @@ class Path {
             });
         }
         constants.output("==========================");
-        constants.output("        Path Prleted      ");
+        constants.output("        Path Printed      ");
         constants.output("==========================");
     }
 
@@ -3512,4 +3393,12 @@ class Path {
 
 }
 
-module.exports = { Event, Path };
+if (eenv === 'node') {
+    // module.exports = { Event, Path };
+    exports.Event = Event;
+    exports.Path = Path;
+}
+else if (eenv === 'browser') {
+    window.Event = Event;
+    window.Path = Path;
+}

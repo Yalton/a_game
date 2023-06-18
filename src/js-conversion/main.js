@@ -1,13 +1,25 @@
 
-let env = typeof window !== 'undefined' ? 'browser' : 'node';
-if (env === 'node') {
-    const Player = require('./player.js');
-    const { Event, Path } = require('./event.js');
-    const asciiArt = require('./ascii.js');
-    const Constants = require('./constants.js');
-}
-const constants = new Constants();
+let menv = typeof window !== 'undefined' ? 'browser' : 'node';
 
+// menv = typeof window !== 'undefined' ? 'browser' : 'node';
+let Constants, Player, Event, Path, asciiArt;
+
+if (menv === 'node') {
+    Player = require('./player.js');
+    const eventModule = require('./event.js');
+    Event = eventModule.Event;
+    Path = eventModule.Path;
+    asciiArt = require('./ascii.js');
+    Constants = require('./constants.js');
+} else if (menv === 'browser') {
+    Event = window.Event
+    Path = window.Path
+    Constants = window.Constants;
+    Player = window.Player;
+    asciiArt = window.asciiArt;
+}
+
+const constants = new Constants();
 
 //const prompt = require('prompt-sync')({sigint: true});
 
@@ -25,17 +37,15 @@ function randnum(a, b) {
     }
 }
 
-// Asci island function: this would need to be rethought in a web environment
-function ascisland() {
-    // Retrieve island.txt content via AJAX or other web method
-    // Then:
+// Asci island function: this would need to be rethought in a web menvironment
+async function ascisland() {
 
-    asciiArt.asciisland()
+    await asciiArt.asciisland()
     constants.output("\n\n\nYou wake up to find yourself alone on an island in the middle of the ocean. You can see a cruise ship on the horizon.\n\nAttached to the island are three paths all going in the direction of the ship. No one path seems better than any other, which path will you choose?");
 }
 
 // Score function
-function score(obj, modifier) {
+async function score(obj, modifier) {
     let score
     constants.output("\n         ||Score||         ");
     constants.output("===========================");
@@ -50,20 +60,56 @@ function score(obj, modifier) {
     }
     constants.output("Total Score: " + score);
     constants.output("===========================");
-    process.exit(1); // This is a Node.js function, won't work in a browser environment
+    if (aenv === 'browser') 
+        constants.output("Refresh the page to play again");
+
+    if (menv === 'node') {
+        // Exit the process in Node.js environment
+        process.exit(1);
+    } else if (menv === 'browser') {
+        // Create a modal div
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+
+        // Create the restart button
+        const restartButton = document.createElement('button');
+        restartButton.innerText = 'Restart Game';
+        restartButton.style.padding = '10px 20px';
+        restartButton.style.fontSize = '20px';
+
+        // Add click event to reload the page
+        restartButton.onclick = function() {
+            location.reload();
+        };
+
+        // Append the button to the modal
+        modal.appendChild(restartButton);
+
+        // Append the modal to the body of the HTML document
+        document.body.appendChild(modal);
+    }
 }
 
 // Death function
-function death(obj) {
-    asciiArt.ascideath()
+async function death(obj) {
+    await asciiArt.ascideath()
     constants.output("\nYou crawl across the sand, no longer able to go on, your hands and feet bloodied from your journey; you feel the life slowly drain from your body as the sun beats down on you and the waves lap at the shore.");
     let modifier = 1
     score(obj, modifier);
 }
 
 // Victory function
-function victory(obj) {
-    asciiArt.ascivictory()
+async function victory(obj) {
+    await asciiArt.ascivictory()
     constants.output("Finally.. you have made it; you scream at the top of your lungs to get the attention of anyone onbard; someone notices your desparation and throws a rope down to you");
     constants.output("Climbing up to rope you are greeted by the cruise ship staff, you begin to regale them with the tales of your journey, and they can scarcely believe what they are hearing");
     constants.output("You are led to a room on the ship where you can rest your weary body; you close your eyes and drift into much needed rest...");
@@ -76,7 +122,7 @@ async function main() {
 
 
     // Get path choice from player
-    ascisland();
+    await ascisland();
     let you = new Player();
     let path = [];
     // Populate path with three new Events
@@ -103,8 +149,9 @@ async function main() {
     if (constants.DEBUG)
         constants.output("[Main]DEBUG:In main, path[you.path - 1].isEmpty() = " + path[you.path - 1].isEmpty() + ".")
 
+    // Test ending
+    //you.delta = you.dist
 
-    you.delta = you.dist
     while (!path[you.path - 1].isEmpty() && loops < constants.MAX_LOOP) {
         // ...
 
@@ -117,13 +164,15 @@ async function main() {
         }
         else if (updater === -1) {
             if (you.hp <= 0) {
-                death(you);
+                await death(you);
+                loops = constants.MAX_LOOP
             } else {
                 console.error("[Main]ERROR: Event reported player as dead, main reported as alive. Cannot compute value in superposition.");
                 return;
             }
         } else if (updater === 1) {
-            victory(you);
+            await victory(you);
+            loops = constants.MAX_LOOP
         } else {
             console.error("[Main]ERROR: Improper value returned from eventable.");
             return;

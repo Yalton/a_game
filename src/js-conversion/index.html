@@ -1,47 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your App</title>
     <style>
-        #terminal {
-            background-color: black;
-            color: limegreen;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            height: 80vh;
-            overflow-y: scroll;
-            white-space: pre-wrap;
-        }
-        
-        #input {
-            background-color: black;
-            color: limegreen;
-            font-family: 'Courier New', monospace;
-            border: none;
-            width: 100%;
-            box-sizing: border-box;
-        }
+      #terminal {
+        background-color: black;
+        color: limegreen;
+        font-family: "Courier New", monospace;
+        padding: 20px;
+        height: 80vh;
+        overflow-y: scroll;
+        white-space: pre-wrap;
+      }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
+      #input,
+      #prompt {
+        background-color: black;
+        color: limegreen;
+        font-family: "Courier New", monospace;
+        border: none;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #prompt {
+        padding: 0 20px; /* Same padding as the terminal for alignment */
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="terminal">
-        <div id="output"></div>
+      <div id="output"></div>
     </div>
-    <input id="input" type="text" placeholder="Enter command...">
+    <div id="prompt"></div>
+    <input id="input" type="text" placeholder="Enter command..." />
 
-    <script src="constants.js"></script>
-    <script src="ascii.js"></script>
-    <script src="player.js"></script>
-    <script src="event.js"></script>
-    <script src="main.js"></script>
-</body>
+    <script type="module" src="constants.js"></script>
+    <script type="module" src="ascii.js"></script>
+    <script type="module" src="player.js"></script>
+    <script type="module" src="event.js"></script>
+    <script type="module" src="main.js"></script>
+
+    <script>
+      // Function to scroll the terminal to the bottom
+      function scrollToBottom() {
+        var terminal = document.getElementById("terminal");
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      // Call this function whenever you append new text to the terminal
+      // Example:
+      // document.getElementById('output').innerHTML += "New text";
+      // scrollToBottom();
+    </script>
+  </body>
 </html>
