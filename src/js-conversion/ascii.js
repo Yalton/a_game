@@ -1,5 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+
+let env = typeof window !== 'undefined' ? 'browser' : 'node';
+if (env === 'node')
+{
+    const fs = require('fs');
+    const path = require('path');
+}
 
 function printAsciiArt(filepath) {
     try {
@@ -14,12 +19,20 @@ exports.asciisland = function () {
     printAsciiArt(path.join(__dirname, 'ASCI', 'island.txt'));
 };
 
+exports.ascicruise = function () {
+    printAsciiArt(path.join(__dirname, 'ASCI', 'cruise.txt'));
+};
+
 exports.ascideath = function () {
     printAsciiArt(path.join(__dirname, 'ASCI', 'death.txt'));
 };
 
 exports.asciwin = function () {
     printAsciiArt(path.join(__dirname, 'ASCI', 'win.txt'));
+};
+
+exports.ascivictory = function () {
+    printAsciiArt(path.join(__dirname, 'ASCI', 'victory.txt'));
 };
 
 exports.asciguardian = function () {

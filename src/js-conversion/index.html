@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your App</title>
+    <style>
+        #terminal {
+            background-color: black;
+            color: limegreen;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            height: 80vh;
+            overflow-y: scroll;
+            white-space: pre-wrap;
+        }
+        
+        #input {
+            background-color: black;
+            color: limegreen;
+            font-family: 'Courier New', monospace;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+    </div>
+    <input id="input" type="text" placeholder="Enter command...">
+
+    <script src="constants.js"></script>
+    <script src="ascii.js"></script>
+    <script src="player.js"></script>
+    <script src="event.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

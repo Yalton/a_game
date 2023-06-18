@@ -1,8 +1,11 @@
-const Player = require('./player.js');
-const { Event, Path } = require('./event.js');
-const asciiArt = require('./ascii.js');
-const Constants = require('./constants.js');
 
+let env = typeof window !== 'undefined' ? 'browser' : 'node';
+if (env === 'node') {
+    const Player = require('./player.js');
+    const { Event, Path } = require('./event.js');
+    const asciiArt = require('./ascii.js');
+    const Constants = require('./constants.js');
+}
 const constants = new Constants();
 
 
@@ -60,7 +63,10 @@ function death(obj) {
 
 // Victory function
 function victory(obj) {
-    asciiArt.asciwin()
+    asciiArt.ascivictory()
+    constants.output("Finally.. you have made it; you scream at the top of your lungs to get the attention of anyone onbard; someone notices your desparation and throws a rope down to you");
+    constants.output("Climbing up to rope you are greeted by the cruise ship staff, you begin to regale them with the tales of your journey, and they can scarcely believe what they are hearing");
+    constants.output("You are led to a room on the ship where you can rest your weary body; you close your eyes and drift into much needed rest...");
     let modifier = 2
     score(obj, modifier);
 }
@@ -98,6 +104,7 @@ async function main() {
         constants.output("[Main]DEBUG:In main, path[you.path - 1].isEmpty() = " + path[you.path - 1].isEmpty() + ".")
 
 
+    you.delta = you.dist
     while (!path[you.path - 1].isEmpty() && loops < constants.MAX_LOOP) {
         // ...
 

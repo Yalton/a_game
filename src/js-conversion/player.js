@@ -1,5 +1,9 @@
-const Constants = require('./constants.js');
 
+env = typeof window !== 'undefined' ? 'browser' : 'node';
+if (env === 'node')
+{
+    const Constants = require('./constants.js');
+}
 const constants = new Constants();
 
 class Item {

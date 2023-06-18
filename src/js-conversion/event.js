@@ -1,6 +1,12 @@
-const asciiArt = require('./ascii.js');
-const player = require('./player.js');
-const Constants = require('./constants.js');
+
+
+let env = typeof window !== 'undefined' ? 'browser' : 'node';
+if (env === 'node')
+{
+    const asciiArt = require('./ascii.js');
+    const player = require('./player.js');
+    const Constants = require('./constants.js');
+}
 
 const constants = new Constants();
 
@@ -836,7 +842,7 @@ class Event {
                         switch (adv) {
                             case -1:
                                 if (luck > 80) {
-                                    constants.output(`As you fumble about, you can barely make out the hazy outline of the approaching  ${enem.name}   but even as it goes for the attack you're able to grab it and deal  + dmg +  damage!`)
+                                    constants.output(`As you fumble about, you can barely make out the hazy outline of the approaching  ${enem.name}   but even as it goes for the attack you're able to grab it and deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -848,7 +854,7 @@ class Event {
                                 break;
                             case 0:
                                 if (luck > 60) {
-                                    constants.output(`The  ${enem.name}   runs at you, ready to attack, but luckily your able to grab it on approach and the  ${enem.name}   takes  + dmg +  damage!`)
+                                    constants.output(`The  ${enem.name}   runs at you, ready to attack, but luckily your able to grab it on approach and the  ${enem.name}   takes  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -860,12 +866,12 @@ class Event {
                                 break;
                             case 1:
                                 if (luck > 40) {
-                                    constants.output(`The  ${enem.name}   stumbles away from you aimlessly, hopeless to defend itself. You grab and beat it mercilessly for  + dmg + 2 +  damage!`)
+                                    constants.output(`The  ${enem.name}   stumbles away from you aimlessly, hopeless to defend itself. You grab and beat it mercilessly for ${dmg + 2} damage!`)
                                     enem.hp = enem.hp - (dmg + 2);
                                     return 0;
                                 }
                                 else {
-                                    constants.output(`The  ${enem.name}   struggles to regain it's footing, so you go in for the grab and deal  + dmg +  damage!`)
+                                    constants.output(`The  ${enem.name}   struggles to regain it's footing, so you go in for the grab and deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -879,7 +885,7 @@ class Event {
                         switch (adv) {
                             case -1:
                                 if (luck > 50) {
-                                    constants.output(`As you stumble and fall, you make the determination to take the  ${enem.name}   to the ground with you, you grab it through it's block and deal  + dmg +  damage!`)
+                                    constants.output(`As you stumble and fall, you make the determination to take the  ${enem.name}   to the ground with you, you grab it through it's block and deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -889,12 +895,12 @@ class Event {
                                 }
                                 break;
                             case 0:
-                                constants.output(`You grab at the blocking  ${enem.name}   it clearly was not expecting this. You deal  + dmg +  damage!`)
+                                constants.output(`You grab at the blocking  ${enem.name} it clearly was not expecting this. You deal ${dmg} damage!`)
                                 enem.hp = enem.hp - dmg;
                                 return 0;
                                 break;
                             case 1:
-                                constants.output(`You approach the stumbling  ${enem.name}   it tries to block you, so you go for the grab deal a whopping  + dmg + 3 +  damage!`)
+                                constants.output(`You approach the stumbling  ${enem.name}   it tries to block you, so you go for the grab deal a whopping  ${dmg + 3} damage!`)
                                 enem.hp = enem.hp - (dmg + 3);
                                 return 0;
                                 break;
@@ -906,7 +912,7 @@ class Event {
                         switch (adv) {
                             case -1:
                                 if (luck > 90) {
-                                    constants.output(`By some miracle, even while fumbling about you were able to grab the  ${enem.name}   as it tried to dodge you. The  ${enem.name}   takes  + dmg +  damage!`)
+                                    constants.output(`By some miracle, even while fumbling about you were able to grab the  ${enem.name} as it tried to dodge you. The  ${enem.name} takes  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 1;
                                 }
@@ -921,14 +927,14 @@ class Event {
                                     return -1;
                                 }
                                 else {
-                                    constants.output(`You grab at the  ${enem.name}   it tries to dodge you but is too slow, you deal  + dmg +  damage!`)
+                                    constants.output(`You grab at the  ${enem.name}   it tries to dodge you but is too slow, you deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
 
                                 break;
                             case 1:
-                                constants.output(`You grab at the fumbling  ${enem.name}   it tries to dodge you hopelessly. You deal  + dmg + 2 +  damage!`)
+                                constants.output(`You grab at the fumbling  ${enem.name}   it tries to dodge you hopelessly. You deal  ${dmg + 2}  damage!`)
                                 enem.hp = enem.hp - (dmg + 2);
                                 return 0;
                                 break;
@@ -940,7 +946,7 @@ class Event {
                         switch (adv) {
                             case -1:
                                 if (luck > 80) {
-                                    constants.output(`The  ${enem.name}   approaches you as you stumble about, someohow you know it is going for a grab amd you are able to land one before it does! You deal  + dmg +  damage!`)
+                                    constants.output(`The  ${enem.name}   approaches you as you stumble about, someohow you know it is going for a grab amd you are able to land one before it does! You deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -952,7 +958,7 @@ class Event {
                                 break;
                             case 0:
                                 if (luck > 50) {
-                                    constants.output(`You and the  ${enem.name}   both go for the grab, but you are the succesful one. You deal  + dmg +  damage!`)
+                                    constants.output(`You and the  ${enem.name}   both go for the grab, but you are the succesful one. You deal  ${dmg}  damage!`)
                                     enem.hp = enem.hp - dmg;
                                     return 0;
                                 }
@@ -964,7 +970,7 @@ class Event {
                                 break;
                             case 1:
                                 if (luck > 30) {
-                                    constants.output(`You approach the fumbling  ${enem.name}   and even while it tries to grab you, you grab it and beat it senseless. You deal  + dmg + 2 +  damage!`)
+                                    constants.output(`You approach the fumbling  ${enem.name}   and even while it tries to grab you, you grab it and beat it senseless. You deal  ${dmg + 2} damage!`)
                                     enem.hp = enem.hp - dmg + 2;
                                     return 0;
                                 }
@@ -1366,7 +1372,7 @@ class Event {
                     }
                     else {
                         let dmg = constants.randomNumber(1, 5);
-                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" + dmg + " Hp)")
+                        constants.output("You enter this room, and get cut almost instantly. You cannot be sure what is hurting you so you just keep running frantically trying to find and exit. Your clothes are in tatters, and your body has been broken. (-" ${dmg} " Hp)")
                         player.hp = (player.hp - dmg);
                         await this.buffer('.');
                     }
@@ -2012,7 +2018,7 @@ class Event {
                                 }
                                 else {
                                     let dmg = constants.randomNumber(3, 5);
-                                    constants.output("You pull the book from the shelf, but upon doing so the entire shelf collapses on top of you,and you fall unconcious. When you come to the bookshelf is no where to be found, but your body aches and you struggle to get up. (Hp -" + dmg + ")")
+                                    constants.output("You pull the book from the shelf, but upon doing so the entire shelf collapses on top of you,and you fall unconcious. When you come to the bookshelf is no where to be found, but your body aches and you struggle to get up. (Hp -" ${dmg} ")")
                                     player.hp = (player.hp - dmg);
                                 }
                                 await this.buffer('.');
@@ -2556,7 +2562,7 @@ class Event {
                             {
                                 let dmg = constants.randomNumber(1, 4);
                                 constants.output("You grab the oven handle to open it up, but for some reason it is scorching hot.")
-                                constants.output("You pull your hand away as fast you can, but it still managed to burn you (Hp -" + dmg + ")")
+                                constants.output("You pull your hand away as fast you can, but it still managed to burn you (Hp -" ${dmg} ")")
                                 player.hp = (player.hp - dmg);
                                 searchluck[2] = 0;
                             }
@@ -3171,7 +3177,7 @@ class Event {
                             else if (searchluck[10] < 65 && searchluck[10] > 25)
                             {
                                 let dmg = constants.randomNumber(1, 4);
-                                constants.output("You search every inch of the bookshelf, but it was not as sturdy as you thought it was, and the whole bookshelf collapses on top of you. (Hp -" + dmg + ")")
+                                constants.output("You search every inch of the bookshelf, but it was not as sturdy as you thought it was, and the whole bookshelf collapses on top of you. (Hp -" ${dmg} ")")
                                 player.hp = (player.hp - dmg);
                                 searchluck[10] = 0;
                             }
@@ -3258,18 +3264,22 @@ class Event {
     }
     
     async end(player) {
-        let buf;
+        player.insert('H', 3);
+        player.insert('O', 3);
+        player.insert('D', 3);
+
+        asciiArt.ascicruise()
         constants.output("You've finally made it, the cruise ship is within a kilometer of you! You run towards the dock, screaming and flailing about hoping to get someone's attention.");
         constants.output("Then suddenly, the sky blackens, a thick fog rolls in, and you are filled with an immense dread. From the ground in front of you erupts a terrible nightmare, lying in wait for you.");
-        
+
         constants.output("¥̸̡̛̛͈̩̥̦̲̲̞͇͍͌̅̏͛̿͐̀̍͠ͅð̵̢̯̞͇̠͙͍̟̞̹͐͋̐̿͌̊̚̕͜͝͝µ̸̡̩͈̘͈̝̭̬̘͕̽͂̔̉̉̅̔̈́̉̋͜ ̸̢̢̯̲͔̬͕̖̪̭̟̅̾̓̇̀͆̓͒̎͊̕§̴̧̧͖͚̣̳͕̗̳̻͐͂̏̉̈́̄͒́̉̚͠ͅh̸̡̠̞̝̮͙̤̜̤̪̲̃͒͂̀͊̍̇̉̔̑͘å̵̛̮̻̯̥̼̯̗͖̪̤̲̊̽̓͛̾̃̽̔̿̿l̵͙͍̬̠͚̪̬̪̦̬̬̏̂́͆͗̓̓̔́̋l̵̤͕͈̪̖̘̲̻͇̼̻̓̏̌̒̓̔̽͂̆̈́̕ ̷͈̜̙̙̙͙̗̪̗̰͗͗̄̂̒̓̆̄́͠͝g̴̢̢̱̠͔̯̰̜̪̟͕̿͗͊̽̍̈́͂̓̓͘͘ð̶̧̥̞͙̘̯̗̳̙̹̪̉̃̅̐́͂̽̿̈̌͘ ̷͔̠̗̗̘͇͓͔̹͐͛́͆̃̓̅͊͜͜͝͝͝ñ̵̨̺͉̩̲͈̝͔̰̹̹̋̌̆̃͌̆͑̑̅̚͝ð̶̧̭̹͓̥̤̺͖̭̦́̃͑̃̌̈́̀̃͂͑͜͝ ̷̧̨̲̮̞̝̥͔͇̘͗́̈́̉̂͊̊́̇̍̕͜£̶̨̛̬̫̲̟̙̹͈͎̗̬͛́̅̓̇́͆̈́̀̐µ̴̡̛͈̗̫̖̳̬̭̟̊̽̾͑̏̆͗̕̚͝ͅͅr̸̡̟͖̼̫̭̱̠̳̮̃̔́͒̅͋̃̌̒͗͝†̶̛̯͕͕̹̦̠̘̥͈̻̞̈́͊͗̈́͋͑͋͌̕͝h̴̢̛̗͇̲̹̫̗̞̣̣͉̋͗̐͆̋̀̒̐͝ê̸̡̫̠͙͉̳̫͖͒̉̃̀̀͋̽̌̇͜͝͝ͅͅr̸̛̘̙͉̹̣̰̳̣̖͎̒̊̈̈́͑̃̈́̊͊͝ͅ")
         
         constants.output('_');
-        buf = await constants.input("Enter your choice: ");
+        await this.buffer('.')
         await this.battle(player, 20);
         if (player.hp > 0) {
-            constants.output("As the beast falls, the sky clears around you, and you find yourself transported to the base of the ship. You dont remember much after that, foggy images of some kind crew members taking you aboard. When you next awaken you're safe and warm in a bed aboard the cruise ship.");
-            constants.output('.');
+            constants.output("As the beast falls, the sky clears around you; it took everything you had, but at long last you may be rid of this nightmare...");
+            await this.buffer('.')
         }
         return;
     }
@@ -3501,6 +3511,5 @@ class Path {
     }
 
 }
-
 
 module.exports = { Event, Path };
