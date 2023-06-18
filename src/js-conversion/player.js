@@ -22,6 +22,7 @@ class Player {
         this.dmg = 1;
         this.secr = 1;
         this.dfc = 1;
+        this.enemfelled = 0;
     }
 
     empty() {
@@ -29,8 +30,9 @@ class Player {
     }
 
     insert(type, val) {
+        val = Number(val)
         if (constants.DEBUG)
-            console.log("[Player]DEBUG: Inserting a/an " + this.itemName(type, val) + " into Item.");
+            console.log("[Player]DEBUG: Inserting a/an " + this.itemName(type, val) + " into Item; type is " + type + "val is: " + val);
         if (type == 'S' || type == 'D' || type == 'O' || type == 'H') {
             let x = new Item(type, val);
             this.items.push(x);
@@ -42,7 +44,9 @@ class Player {
     }
 
     remove(c, value) {
-        console.log(`[Player]DEBUG: Remove function called for ${this.itemName(c, value)}.`);
+        value = Number(value)
+        if (constants.DEBUG)
+            console.log(`[Player]DEBUG: Remove function called for ${this.itemName(c, value)}.`);
         const index = this.items.findIndex(item => item.type === c && item.val === value);
         if (index !== -1) {
             this.items.splice(index, 1);
@@ -56,80 +60,79 @@ class Player {
     }
 
     itemName(c, val) {
-        switch (c)
-        {
+        val = Number(val)
+        if (constants.DEBUG)
+            console.log("[Player]DEBUG: Calling Item name for Item; type is " + c + "val is: " + val);
+
+        switch (c) {
             //Offence items case
-        case 'O':
-            switch (val)
-            {
-            case 1:
-                return "Knife";
-                break;
+            case 'O':
+                switch (val) {
+                    case 1:
+                        return "Knife";
+                        break;
 
-            case 2:
-                return "Sword";
-                break;
+                    case 2:
+                        return "Sword";
+                        break;
 
-            case 3:
-                return "Gun";
-                break;
-            }
+                    case 3:
+                        return "Gun";
+                        break;
+                }
             //Defense items case
-        case 'D':
-            switch (val)
-            {
-            case 1:
-                return "Leather Jacket";
-                break;
-            case 2:
-                return "Chainmail";
-                break;
-            case 3:
-                return "Knight Armor";
-                break;
-            }
+            case 'D':
+                switch (val) {
+                    case 1:
+                        return "Leather Jacket";
+                        break;
+                    case 2:
+                        return "Chainmail";
+                        break;
+                    case 3:
+                        return "Knight Armor";
+                        break;
+                }
             //Health items case
-        case 'H':
-            switch (val)
-            {
-            case 1:
-                return "Bandage";
+            case 'H':
+                switch (val) {
+                    case 1:
+                        return "Bandage";
+                        break;
+                    case 2:
+                        return "Medkit";
+                        break;
+                    case 3:
+                        return "Stem Cells";
+                        break;
+                }
                 break;
-            case 2:
-                return "Medkit";
-                break;
-            case 3:
-                return "Stem Cells";
-                break;
-            }
-            break;
             //Special items case
-        case 'S':
-            switch (val)
-            {
-            case 1:
-                return "Battery Box";
+            case 'S':
+                switch (val) {
+                    case 1:
+                        return "Battery Box";
+                        break;
+                    case 2:
+                        return "Mystery Box";
+                        break;
+                    case 3:
+                        return "Wormhole Box";
+                        break;
+                    case 4:
+                        return "Battle Box";
+                        break;
+                    case 5:
+                        return "Path Switcher";
+                        break;
+                    case -1:
+                        return "Mysterious Key";
+                        break;
+                }
                 break;
-            case 2:
-                return "Mystery Box";
-                break;
-            case 3:
-                return "Wormhole Box";
-                break;
-            case 4:
-                return "Battle Box";
-                break;
-            case 5:
-                return "Path Switcher";
-                break;
-            case -1:
-                return "Mysterious Key";
-                break;
-            }
-            break;
         }
         //If item is not in the list, this will return. Program will not break
-	    return "ITEM_NULL";
+        return "ITEM_NULL";
     }
 
     typePresent(c) {
@@ -162,19 +165,20 @@ class Player {
         }
     }
 
-    async genranditem()
-    {
+    async genranditem() {
         let type = await this.randitem();
-        switch (type)
-        {
-        case 'S':
-            id = randn(1, 5);
-            break;
-        default:
-            id = randn(1, 3);
-            break;
+        let id
+        switch (type) {
+            case 'S':
+                id = constants.randomNumber(1, 5);
+                break;
+            default:
+                id = constants.randomNumber(1, 3);
+                break;
         }
-        return new Item(type, id)
+        if (constants.DEBUG)
+            console.log(`[Player]DEBUG: Generating new random item with type ${type} and id ${id}.`);
+        return { type, id }
     }
 
 
@@ -234,6 +238,12 @@ class Player {
     }
     get batt() {
         return this._batt;
+    }
+    set enemfelled(z) {
+        this._enemfelled = z;
+    }
+    get enemfelled() {
+        return this._enemfelled;
     }
 }
 

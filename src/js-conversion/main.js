@@ -1,12 +1,12 @@
-const Player = require('./player.js'); 
-const { Event, Path }  = require('./event.js'); 
+const Player = require('./player.js');
+const { Event, Path } = require('./event.js');
 const asciiArt = require('./ascii.js');
 const Constants = require('./constants.js');
 
 const constants = new Constants();
 
 
-const prompt = require('prompt-sync')({sigint: true});
+//const prompt = require('prompt-sync')({sigint: true});
 
 
 // Random number function
@@ -32,13 +32,20 @@ function ascisland() {
 }
 
 // Score function
-function score(obj) {
+function score(obj, modifier) {
+    let score
     constants.output("\n         ||Score||         ");
     constants.output("===========================");
-    constants.output("# of Items: " + obj.size());
-    constants.output("# of Batteries: " + obj.batt());
-    constants.output("Distance Traveled: " + obj.delta());
-    if (obj.secr() != 1) constants.output("*Found a Secret*");
+    constants.output("Items Count: " + obj.size());
+    constants.output("Batterry Count: " + obj.batt);
+    constants.output("Enemies defeated: " + obj.enemfelled);
+    constants.output("Distance Traveled: " + obj.delta);
+    score = (obj.size() + obj.batt + obj.delta + obj.enemfelled) * modifier
+    if (obj.secr != 1) {
+        score = score * 2
+        constants.output("*Found a Secret*");
+    }
+    constants.output("Total Score: " + score);
     constants.output("===========================");
     process.exit(1); // This is a Node.js function, won't work in a browser environment
 }
@@ -47,19 +54,21 @@ function score(obj) {
 function death(obj) {
     asciiArt.ascideath()
     constants.output("\nYou crawl across the sand, no longer able to go on, your hands and feet bloodied from your journey; you feel the life slowly drain from your body as the sun beats down on you and the waves lap at the shore.");
-    score(obj);
+    let modifier = 1
+    score(obj, modifier);
 }
 
 // Victory function
 function victory(obj) {
     asciiArt.asciwin()
-    score(obj);
+    let modifier = 2
+    score(obj, modifier);
 }
 
 async function main() {
     // ...
 
-    
+
     // Get path choice from player
     ascisland();
     let you = new Player();
@@ -83,21 +92,21 @@ async function main() {
     for (let i = 0; i < 3; i++) {
         path[i].buildPath(you);
     }
-        
+
     // // Main game loop
     if (constants.DEBUG)
         constants.output("[Main]DEBUG:In main, path[you.path - 1].isEmpty() = " + path[you.path - 1].isEmpty() + ".")
 
-    
+
     while (!path[you.path - 1].isEmpty() && loops < constants.MAX_LOOP) {
         // ...
-        
+
         if (updater === 0) {
-			// Stores the return value of eventable in updater, updater will tell main if there have been in changes in event.cpp
-			if (constants.DEBUG)
+            // Stores the return value of eventable in updater, updater will tell main if there have been in changes in event.cpp
+            if (constants.DEBUG)
                 constants.output("[Main]DEBUG:In main, Entering eventable for path # " + you.path + ".")
             updater = await path[you.path - 1].events[you.delta].eventable(you);
-			you.delta = you.delta + 1;
+            you.delta = you.delta + 1;
         }
         else if (updater === -1) {
             if (you.hp <= 0) {

@@ -54,6 +54,11 @@ exports.ascimansion = function () {
     printAsciiArt(path.join(__dirname, 'ASCI', 'mansion.txt'));
 };
 
+exports.ascicave = function () {
+    printAsciiArt(path.join(__dirname, 'ASCI', 'cave.txt'));
+};
+
+
 exports.ascicthulu = function () {
     printAsciiArt(path.join(__dirname, 'ASCI', 'cthulu.txt'));
 };
@@ -140,6 +145,10 @@ exports.ascialligator = function () {
 exports.ascioldman = function () {
 
     printAsciiArt(path.join(__dirname, 'ASCI', 'oldman.txt'));
+}
+exports.ascioldmanevent = function () {
+
+    printAsciiArt(path.join(__dirname, 'ASCI', 'oldmanevent.txt'));
 }
 exports.ascikali = function () {
 
